@@ -1,21 +1,10 @@
----
-title: 统计
-icon: edit
-date: 2022-07-01
-category:
-  - 统计
-tag:
-  - 图表
----
-
-# 统计
-
-<!-- more -->
-
-::: echarts A line chart
-
-```js
-var data = [
+<template>
+  <component>123</component>
+</template>
+<script>
+export default {
+  data() {
+    var data = [
   {
     name: 'Grandpa',
     children: [
@@ -114,7 +103,8 @@ var data = [
     ]
   }
 ];
-module.exports = {
+
+option = {
   visualMap: {
     type: 'continuous',
     min: 0,
@@ -132,6 +122,7 @@ module.exports = {
     }
   }
 };
-```
 
-:::
+  }
+}
+</script>
