@@ -12,866 +12,679 @@ tag:
 
 <!-- more -->
 
-::: echarts A line chart
+| **item** | **日期**     | **现金支出** | **水** | **煤气** | **固定资产税** | **转账** |
+|:--------:|:----------:|:--------:|:-----:|:------:|:---------:|:------:|
+| ---    | 当前汇总       | 361305   | 39968 | 23437  | 297900    | 400000 |
+| **43**   | 27/06/2022 | 1826     | 1826  | 0      | 0         | 0      |
+| **42**   | 30/05/2022 | 109600   | 0     | 0      | 109600    | 0      |
+| **41**   | 22/04/2022 | 1826     | 1826  | 0      | 0         | 0      |
+| **40**   | 22/02/2022 | 0        | 0     | 0      | 0         | 150000 |
+| **39**   | 21/02/2022 | 15826    | 1826  | 0      | 14000     | 0      |
+| ---    |            |          |       |        |           |        |
+| **38**   | 24/12/2021 | 15826    | 1826  | 0      | 14000     | 0      |
+| **37**   | 26/10/2021 | 1826     | 1826  | 0      | 0         | 0      |
+| **36**   | 27/08/2021 | 1826     | 1826  | 0      | 0         | 0      |
+| **35**   | 29/07/2021 | 14000    | 0     | 0      | 14000     | 0      |
+| **34**   | 25/06/2021 | 1826     | 1826  | 0      | 0         | 0      |
+| **33**   | 31/05/2021 | 17300    | 0     | 0      | 17300     | 0      |
+| **32**   | 30/04/2021 | 1826     | 1826  | 0      | 0         | 0      |
+| **31**   | 28/02/2021 | 17826    | 1826  | 0      | 16000     | 0      |
+| ---    |            |          |       |        |           |        |
+| **30**   | 30/12/2020 | 17826    | 1826  | 0      | 16000     | 0      |
+| **29**   | 27/10/2020 | 1826     | 1826  | 0      | 0         | 0      |
+| **28**   | 31/08/2020 | 1826     | 1826  | 0      | 0         | 0      |
+| **27**   | 28/07/2020 | 16000    | 0     | 0      | 16000     | 0      |
+| **26**   | 01/07/2020 | 1826     | 1826  | 0      | 0         | 0      |
+| **25**   | 03/06/2020 | 0        | 0     | 0      | 0         | 150000 |
+| **24**   | 01/06/2020 | 16500    | 0     | 0      | 16500     | 0      |
+| **23**   | 28/04/2020 | 1826     | 1826  | 0      | 0         | 0      |
+| **22**   | 27/02/2020 | 17826    | 1826  | 0      | 16000     | 0      |
+| ---    |            |          |       |        |           |        |
+| **21**   | 26/12/2019 | 19892    | 1826  | 2066   | 16000     | 0      |
+| **20**   | 16/12/2019 | 1296     | 0     | 1296   | 0         | 0      |
+| **19**   | 13/11/2019 | 1271     | 0     | 1271   | 0         | 0      |
+| **18**   | 28/10/2019 | 1792     | 1792  | 0      | 0         | 0      |
+| **17**   | 06/09/2019 | 1242     | 0     | 1242   | 0         | 0      |
+| **16**   | 28/08/2019 | 1792     | 1792  | 0      | 0         | 0      |
+| **15**   | 30/07/2019 | 17242    | 0     | 1242   | 16000     | 0      |
+| **14**   | 26/06/2019 | 3034     | 1792  | 1242   | 0         | 0      |
+| **13**   | 27/05/2019 | 17742    | 0     | 1242   | 16500     | 0      |
+| **12**   | 22/04/2019 | 1792     | 1792  | 0      | 0         | 0      |
+| **11**   | 12/04/2019 | 1242     | 0     | 1242   | 0         | 0      |
+| **10**   | 05/04/2019 | 3764     | 0     | 3764   | 0         | 0      |
+| **9**    | 15/02/2019 | 1792     | 1792  | 0      | 0         | 0      |
+| **8**    | 08/02/2019 | 1242     | 0     | 1242   | 0         | 0      |
+| **7**    | 09/01/2019 | 2207     | 0     | 2207   | 0         | 0      |
+| ---     |            |          |       |        |           |        |
+| **6**    | 18/12/2018 | 1792     | 1792  | 0      | 0         | 0      |
+| **5**    | 10/12/2018 | 1342     | 0     | 1342   | 0         | 0      |
+| **4**    | 08/11/2018 | 1512     | 0     | 1512   | 0         | 0      |
+| **3**    | 01/10/2018 | 1342     | 0     | 1342   | 0         | 0      |
+| **2**    | 09/09/2018 | 1185     | 0     | 1185   | 0         | 0      |
+| **1**    | 08/08/2018 | 0        | 0     | 0      | 0         | 100000 |
+
+::: echarts 分年度、分类、分项支出统计图
 
 ```js
+
 var data = [
-  {
-    name: 'Flora',
-    itemStyle: {
-      color: '#da0d68'
+    {
+        name: '2022',
+        itemStyle: {
+            color: '#da0d68'
+        },
+        children: [
+            {
+                name: '水',
+                itemStyle: {
+                    color: '#975e6d'
+                },
+                children: [
+                    {
+                        name: '2022-06-27',
+                        value: 1826,
+                        itemStyle: {
+                            color: '#f99e1c'
+                        }
+                    },
+                    {
+                        name: '2022-04-22',
+                        value: 1826,
+                        itemStyle: {
+                            color: '#ef5a78'
+                        }
+                    },
+                    {
+                        name: '2022-02-21',
+                        value: 1826,
+                        itemStyle: {
+                            color: '#f7f1bd'
+                        }
+                    }
+                ]
+            },
+            {
+                name: '固定资产税',
+                itemStyle: {
+                    color: '#e0719c'
+                },
+                children: [
+                    {
+                        name: '2022-05-30',
+                        value: 109600,
+                        itemStyle: {
+                            color: '#ef5a78'
+                        }
+                    },
+                    {
+                        name: '2022-02-21',
+                        value: 14000,
+                        itemStyle: {
+                            color: '#f7f1bd'
+                        }
+                    }
+                ]
+            }
+        ]
     },
-    children: [
-      {
-        name: 'Black Tea',
-        value: 1,
+    {
+        name: '2021',
         itemStyle: {
-          color: '#975e6d'
-        }
-      },
-      {
-        name: 'Floral',
-        itemStyle: {
-          color: '#e0719c'
+            color: '#da1d23'
         },
         children: [
-          {
-            name: 'Chamomile',
-            value: 1,
-            itemStyle: {
-              color: '#f99e1c'
+            {
+                name: '水',
+                itemStyle: {
+                    color: '#dd4c51'
+                },
+                children: [
+                    {
+                        name: '2021-12-24',
+                        value: 1826,
+                        itemStyle: {
+                            color: '#3e0317'
+                        }
+                    },
+                    {
+                        name: '2021-10-26',
+                        value: 1826,
+                        itemStyle: {
+                            color: '#e62969'
+                        }
+                    },
+                    {
+                        name: '2021-08-27',
+                        value: 1826,
+                        itemStyle: {
+                            color: '#6569b0'
+                        }
+                    },
+                    {
+                        name: '2021-06-25',
+                        value: 1826,
+                        itemStyle: {
+                            color: '#ef2d36'
+                        }
+                    },
+                    {
+                        name: '2021-04-30',
+                        value: 1826,
+                        itemStyle: {
+                            color: '#b53b54'
+                        }
+                    },
+                    {
+                        name: '2021-02-28',
+                        value: 1826,
+                        itemStyle: {
+                            color: '#a5446f'
+                        }
+                    }
+                ]
+            },
+            {
+                name: '固定资产税',
+                itemStyle: {
+                    color: '#c94a44'
+                },
+                children: [
+                    {
+                        name: '2021-12-24',
+                        value: 14000,
+                        itemStyle: {
+                            color: '#f2684b'
+                        }
+                    },
+                    {
+                        name: '2021-07-29',
+                        value: 14000,
+                        itemStyle: {
+                            color: '#e73451'
+                        }
+                    },
+                    {
+                        name: '2021-05-31',
+                        value: 17300,
+                        itemStyle: {
+                            color: '#e65656'
+                        }
+                    },
+                    {
+                        name: '2021-02-28',
+                        value: 16000,
+                        itemStyle: {
+                            color: '#f89a1c'
+                        }
+                    }
+                ]
             }
-          },
-          {
-            name: 'Rose',
-            value: 1,
-            itemStyle: {
-              color: '#ef5a78'
-            }
-          },
-          {
-            name: 'Jasmine',
-            value: 1,
-            itemStyle: {
-              color: '#f7f1bd'
-            }
-          }
         ]
-      }
-    ]
-  },
-  {
-    name: 'Fruity',
-    itemStyle: {
-      color: '#da1d23'
     },
-    children: [
-      {
-        name: 'Berry',
+    {
+        name: '2020',
         itemStyle: {
-          color: '#dd4c51'
+            color: '#dd4c51'
         },
         children: [
-          {
-            name: 'Blackberry',
-            value: 1,
-            itemStyle: {
-              color: '#3e0317'
+            {
+                name: '水',
+                itemStyle: {
+                    color: '#dd4c51'
+                },
+                children: [
+                    {
+                        name: '2020-12-30',
+                        value: 1826,
+                        itemStyle: {
+                            color: '#3e0317'
+                        }
+                    },
+                    {
+                        name: '2020-10-27',
+                        value: 1826,
+                        itemStyle: {
+                            color: '#e62969'
+                        }
+                    },
+                    {
+                        name: '2020-08-31',
+                        value: 1826,
+                        itemStyle: {
+                            color: '#6569b0'
+                        }
+                    },
+                    {
+                        name: '2020-07-01',
+                        value: 1826,
+                        itemStyle: {
+                            color: '#ef2d36'
+                        }
+                    },
+                    {
+                        name: '2020-04-28',
+                        value: 1826,
+                        itemStyle: {
+                            color: '#b53b54'
+                        }
+                    },
+                    {
+                        name: '2020-02-27',
+                        value: 1826,
+                        itemStyle: {
+                            color: '#a5446f'
+                        }
+                    }
+                ]
+            },
+            {
+                name: '固定资产税',
+                itemStyle: {
+                    color: '#c94a44'
+                },
+                children: [
+                    {
+                        name: '2020-12-30',
+                        value: 16000,
+                        itemStyle: {
+                            color: '#f2684b'
+                        }
+                    },
+                    {
+                        name: '2020-07-28',
+                        value: 16000,
+                        itemStyle: {
+                            color: '#e73451'
+                        }
+                    },
+                    {
+                        name: '2020-06-01',
+                        value: 16500,
+                        itemStyle: {
+                            color: '#e65656'
+                        }
+                    },
+                    {
+                        name: '2020-02-27',
+                        value: 16000,
+                        itemStyle: {
+                            color: '#f89a1c'
+                        }
+                    }
+                ]
             }
-          },
-          {
-            name: 'Raspberry',
-            value: 1,
-            itemStyle: {
-              color: '#e62969'
-            }
-          },
-          {
-            name: 'Blueberry',
-            value: 1,
-            itemStyle: {
-              color: '#6569b0'
-            }
-          },
-          {
-            name: 'Strawberry',
-            value: 1,
-            itemStyle: {
-              color: '#ef2d36'
-            }
-          }
         ]
-      },
-      {
-        name: 'Dried Fruit',
-        itemStyle: {
-          color: '#c94a44'
-        },
-        children: [
-          {
-            name: 'Raisin',
-            value: 1,
-            itemStyle: {
-              color: '#b53b54'
-            }
-          },
-          {
-            name: 'Prune',
-            value: 1,
-            itemStyle: {
-              color: '#a5446f'
-            }
-          }
-        ]
-      },
-      {
-        name: 'Other Fruit',
-        itemStyle: {
-          color: '#dd4c51'
-        },
-        children: [
-          {
-            name: 'Coconut',
-            value: 1,
-            itemStyle: {
-              color: '#f2684b'
-            }
-          },
-          {
-            name: 'Cherry',
-            value: 1,
-            itemStyle: {
-              color: '#e73451'
-            }
-          },
-          {
-            name: 'Pomegranate',
-            value: 1,
-            itemStyle: {
-              color: '#e65656'
-            }
-          },
-          {
-            name: 'Pineapple',
-            value: 1,
-            itemStyle: {
-              color: '#f89a1c'
-            }
-          },
-          {
-            name: 'Grape',
-            value: 1,
-            itemStyle: {
-              color: '#aeb92c'
-            }
-          },
-          {
-            name: 'Apple',
-            value: 1,
-            itemStyle: {
-              color: '#4eb849'
-            }
-          },
-          {
-            name: 'Peach',
-            value: 1,
-            itemStyle: {
-              color: '#f68a5c'
-            }
-          },
-          {
-            name: 'Pear',
-            value: 1,
-            itemStyle: {
-              color: '#baa635'
-            }
-          }
-        ]
-      },
-      {
-        name: 'Citrus Fruit',
-        itemStyle: {
-          color: '#f7a128'
-        },
-        children: [
-          {
-            name: 'Grapefruit',
-            value: 1,
-            itemStyle: {
-              color: '#f26355'
-            }
-          },
-          {
-            name: 'Orange',
-            value: 1,
-            itemStyle: {
-              color: '#e2631e'
-            }
-          },
-          {
-            name: 'Lemon',
-            value: 1,
-            itemStyle: {
-              color: '#fde404'
-            }
-          },
-          {
-            name: 'Lime',
-            value: 1,
-            itemStyle: {
-              color: '#7eb138'
-            }
-          }
-        ]
-      }
-    ]
-  },
-  {
-    name: 'Sour/\nFermented',
-    itemStyle: {
-      color: '#ebb40f'
     },
-    children: [
-      {
-        name: 'Sour',
+    {
+        name: '2019',
         itemStyle: {
-          color: '#e1c315'
+            color: '#f7a128'
         },
         children: [
-          {
-            name: 'Sour Aromatics',
-            value: 1,
-            itemStyle: {
-              color: '#9ea718'
+            {
+                name: '水',
+                itemStyle: {
+                    color: '#f26355'
+                },
+                children: [
+                    {
+                        name: '2019-12-26',
+                        value: 1826,
+                        itemStyle: {
+                            color: '#3e0317'
+                        }
+                    },
+                    {
+                        name: '2019-10-28',
+                        value: 1792,
+                        itemStyle: {
+                            color: '#e62969'
+                        }
+                    },
+                    {
+                        name: '2019-08-28',
+                        value: 1792,
+                        itemStyle: {
+                            color: '#6569b0'
+                        }
+                    },
+                    {
+                        name: '2019-06-26',
+                        value: 1792,
+                        itemStyle: {
+                            color: '#ef2d36'
+                        }
+                    },
+                    {
+                        name: '2019-04-22',
+                        value: 1792,
+                        itemStyle: {
+                            color: '#b53b54'
+                        }
+                    },
+                    {
+                        name: '2019-02-15',
+                        value: 1792,
+                        itemStyle: {
+                            color: '#a5446f'
+                        }
+                    }
+                ]
+            },
+            {
+                name: '煤气',
+                itemStyle: {
+                    color: '#e2631e'
+                },
+                children: [
+                    {
+                        name: '2019-12-26',
+                        value: 2066,
+                        itemStyle: {
+                            color: '#3e0317'
+                        }
+                    },
+                    {
+                        name: '2019-12-16',
+                        value: 1296,
+                        itemStyle: {
+                            color: '#e62969'
+                        }
+                    },
+                    {
+                        name: '2019-11-13',
+                        value: 1271,
+                        itemStyle: {
+                            color: '#6569b0'
+                        }
+                    },
+                    {
+                        name: '2019-09-06',
+                        value: 1242,
+                        itemStyle: {
+                            color: '#ef2d36'
+                        }
+                    },
+                    {
+                        name: '2019-07-30',
+                        value: 1242,
+                        itemStyle: {
+                            color: '#b53b54'
+                        }
+                    },
+                    {
+                        name: '2019-06-26',
+                        value: 1242,
+                        itemStyle: {
+                            color: '#a5446f'
+                        }
+                    },
+                    {
+                        name: '2019-05-27',
+                        value: 1242,
+                        itemStyle: {
+                            color: '#3e0317'
+                        }
+                    },
+                    {
+                        name: '2019-04-12',
+                        value: 1242,
+                        itemStyle: {
+                            color: '#e62969'
+                        }
+                    },
+                    {
+                        name: '2019-04-05',
+                        value: 3764,
+                        itemStyle: {
+                            color: '#6569b0'
+                        }
+                    },
+                    {
+                        name: '2019-02-08',
+                        value: 1242,
+                        itemStyle: {
+                            color: '#ef2d36'
+                        }
+                    },
+                    {
+                        name: '2019-01-09',
+                        value: 2207,
+                        itemStyle: {
+                            color: '#b53b54'
+                        }
+                    }
+                ]
+            },
+            {
+                name: '固定资产税',
+                itemStyle: {
+                    color: '#fde404'
+                },
+                children: [
+                    {
+                        name: '2019-12-26',
+                        value: 16000,
+                        itemStyle: {
+                            color: '#f2684b'
+                        }
+                    },
+                    {
+                        name: '2019-07-30',
+                        value: 16000,
+                        itemStyle: {
+                            color: '#e73451'
+                        }
+                    },
+                    {
+                        name: '2010-05-27',
+                        value: 16500,
+                        itemStyle: {
+                            color: '#e65656'
+                        }
+                    }
+                ]
             }
-          },
-          {
-            name: 'Acetic Acid',
-            value: 1,
-            itemStyle: {
-              color: '#94a76f'
-            }
-          },
-          {
-            name: 'Butyric Acid',
-            value: 1,
-            itemStyle: {
-              color: '#d0b24f'
-            }
-          },
-          {
-            name: 'Isovaleric Acid',
-            value: 1,
-            itemStyle: {
-              color: '#8eb646'
-            }
-          },
-          {
-            name: 'Citric Acid',
-            value: 1,
-            itemStyle: {
-              color: '#faef07'
-            }
-          },
-          {
-            name: 'Malic Acid',
-            value: 1,
-            itemStyle: {
-              color: '#c1ba07'
-            }
-          }
         ]
-      },
-      {
-        name: 'Alcohol/\nFremented',
-        itemStyle: {
-          color: '#b09733'
-        },
-        children: [
-          {
-            name: 'Winey',
-            value: 1,
-            itemStyle: {
-              color: '#8f1c53'
-            }
-          },
-          {
-            name: 'Whiskey',
-            value: 1,
-            itemStyle: {
-              color: '#b34039'
-            }
-          },
-          {
-            name: 'Fremented',
-            value: 1,
-            itemStyle: {
-              color: '#ba9232'
-            }
-          },
-          {
-            name: 'Overripe',
-            value: 1,
-            itemStyle: {
-              color: '#8b6439'
-            }
-          }
-        ]
-      }
-    ]
-  },
-  {
-    name: 'Green/\nVegetative',
-    itemStyle: {
-      color: '#187a2f'
     },
-    children: [
-      {
-        name: 'Olive Oil',
-        value: 1,
+    {
+        name: '2018',
         itemStyle: {
-          color: '#a2b029'
-        }
-      },
-      {
-        name: 'Raw',
-        value: 1,
-        itemStyle: {
-          color: '#718933'
-        }
-      },
-      {
-        name: 'Green/\nVegetative',
-        itemStyle: {
-          color: '#3aa255'
+            color: '#da0d68'
         },
         children: [
-          {
-            name: 'Under-ripe',
-            value: 1,
-            itemStyle: {
-              color: '#a2bb2b'
+            {
+                name: '水',
+                itemStyle: {
+                    color: '#975e6d'
+                },
+                children: [
+                    {
+                        name: '2018-12-18',
+                        value: 1792,
+                        itemStyle: {
+                            color: '#f99e1c'
+                        }
+                    }
+                ]
+            },
+            {
+                name: '煤气',
+                itemStyle: {
+                    color: '#e0719c'
+                },
+                children: [
+                    {
+                        name: '2018-12-10',
+                        value: 1342,
+                        itemStyle: {
+                            color: '#ef5a78'
+                        }
+                    },
+                    {
+                        name: '2018-11-08',
+                        value: 1512,
+                        itemStyle: {
+                            color: '#f7f1bd'
+                        }
+                    },
+                    {
+                        name: '2018-10-01',
+                        value: 1342,
+                        itemStyle: {
+                            color: '#e65656'
+                        }
+                    },
+                    {
+                        name: '2018-09-09',
+                        value: 1185,
+                        itemStyle: {
+                            color: '#f89a1c'
+                        }
+                    }
+                ]
             }
-          },
-          {
-            name: 'Peapod',
-            value: 1,
-            itemStyle: {
-              color: '#62aa3c'
-            }
-          },
-          {
-            name: 'Fresh',
-            value: 1,
-            itemStyle: {
-              color: '#03a653'
-            }
-          },
-          {
-            name: 'Dark Green',
-            value: 1,
-            itemStyle: {
-              color: '#038549'
-            }
-          },
-          {
-            name: 'Vegetative',
-            value: 1,
-            itemStyle: {
-              color: '#28b44b'
-            }
-          },
-          {
-            name: 'Hay-like',
-            value: 1,
-            itemStyle: {
-              color: '#a3a830'
-            }
-          },
-          {
-            name: 'Herb-like',
-            value: 1,
-            itemStyle: {
-              color: '#7ac141'
-            }
-          }
         ]
-      },
-      {
-        name: 'Beany',
-        value: 1,
-        itemStyle: {
-          color: '#5e9a80'
-        }
-      }
-    ]
-  },
-  {
-    name: 'Other',
-    itemStyle: {
-      color: '#0aa3b5'
-    },
-    children: [
-      {
-        name: 'Papery/Musty',
-        itemStyle: {
-          color: '#9db2b7'
-        },
-        children: [
-          {
-            name: 'Stale',
-            value: 1,
-            itemStyle: {
-              color: '#8b8c90'
-            }
-          },
-          {
-            name: 'Cardboard',
-            value: 1,
-            itemStyle: {
-              color: '#beb276'
-            }
-          },
-          {
-            name: 'Papery',
-            value: 1,
-            itemStyle: {
-              color: '#fefef4'
-            }
-          },
-          {
-            name: 'Woody',
-            value: 1,
-            itemStyle: {
-              color: '#744e03'
-            }
-          },
-          {
-            name: 'Moldy/Damp',
-            value: 1,
-            itemStyle: {
-              color: '#a3a36f'
-            }
-          },
-          {
-            name: 'Musty/Dusty',
-            value: 1,
-            itemStyle: {
-              color: '#c9b583'
-            }
-          },
-          {
-            name: 'Musty/Earthy',
-            value: 1,
-            itemStyle: {
-              color: '#978847'
-            }
-          },
-          {
-            name: 'Animalic',
-            value: 1,
-            itemStyle: {
-              color: '#9d977f'
-            }
-          },
-          {
-            name: 'Meaty Brothy',
-            value: 1,
-            itemStyle: {
-              color: '#cc7b6a'
-            }
-          },
-          {
-            name: 'Phenolic',
-            value: 1,
-            itemStyle: {
-              color: '#db646a'
-            }
-          }
-        ]
-      },
-      {
-        name: 'Chemical',
-        itemStyle: {
-          color: '#76c0cb'
-        },
-        children: [
-          {
-            name: 'Bitter',
-            value: 1,
-            itemStyle: {
-              color: '#80a89d'
-            }
-          },
-          {
-            name: 'Salty',
-            value: 1,
-            itemStyle: {
-              color: '#def2fd'
-            }
-          },
-          {
-            name: 'Medicinal',
-            value: 1,
-            itemStyle: {
-              color: '#7a9bae'
-            }
-          },
-          {
-            name: 'Petroleum',
-            value: 1,
-            itemStyle: {
-              color: '#039fb8'
-            }
-          },
-          {
-            name: 'Skunky',
-            value: 1,
-            itemStyle: {
-              color: '#5e777b'
-            }
-          },
-          {
-            name: 'Rubber',
-            value: 1,
-            itemStyle: {
-              color: '#120c0c'
-            }
-          }
-        ]
-      }
-    ]
-  },
-  {
-    name: 'Roasted',
-    itemStyle: {
-      color: '#c94930'
-    },
-    children: [
-      {
-        name: 'Pipe Tobacco',
-        value: 1,
-        itemStyle: {
-          color: '#caa465'
-        }
-      },
-      {
-        name: 'Tobacco',
-        value: 1,
-        itemStyle: {
-          color: '#dfbd7e'
-        }
-      },
-      {
-        name: 'Burnt',
-        itemStyle: {
-          color: '#be8663'
-        },
-        children: [
-          {
-            name: 'Acrid',
-            value: 1,
-            itemStyle: {
-              color: '#b9a449'
-            }
-          },
-          {
-            name: 'Ashy',
-            value: 1,
-            itemStyle: {
-              color: '#899893'
-            }
-          },
-          {
-            name: 'Smoky',
-            value: 1,
-            itemStyle: {
-              color: '#a1743b'
-            }
-          },
-          {
-            name: 'Brown, Roast',
-            value: 1,
-            itemStyle: {
-              color: '#894810'
-            }
-          }
-        ]
-      },
-      {
-        name: 'Cereal',
-        itemStyle: {
-          color: '#ddaf61'
-        },
-        children: [
-          {
-            name: 'Grain',
-            value: 1,
-            itemStyle: {
-              color: '#b7906f'
-            }
-          },
-          {
-            name: 'Malt',
-            value: 1,
-            itemStyle: {
-              color: '#eb9d5f'
-            }
-          }
-        ]
-      }
-    ]
-  },
-  {
-    name: 'Spices',
-    itemStyle: {
-      color: '#ad213e'
-    },
-    children: [
-      {
-        name: 'Pungent',
-        value: 1,
-        itemStyle: {
-          color: '#794752'
-        }
-      },
-      {
-        name: 'Pepper',
-        value: 1,
-        itemStyle: {
-          color: '#cc3d41'
-        }
-      },
-      {
-        name: 'Brown Spice',
-        itemStyle: {
-          color: '#b14d57'
-        },
-        children: [
-          {
-            name: 'Anise',
-            value: 1,
-            itemStyle: {
-              color: '#c78936'
-            }
-          },
-          {
-            name: 'Nutmeg',
-            value: 1,
-            itemStyle: {
-              color: '#8c292c'
-            }
-          },
-          {
-            name: 'Cinnamon',
-            value: 1,
-            itemStyle: {
-              color: '#e5762e'
-            }
-          },
-          {
-            name: 'Clove',
-            value: 1,
-            itemStyle: {
-              color: '#a16c5a'
-            }
-          }
-        ]
-      }
-    ]
-  },
-  {
-    name: 'Nutty/\nCocoa',
-    itemStyle: {
-      color: '#a87b64'
-    },
-    children: [
-      {
-        name: 'Nutty',
-        itemStyle: {
-          color: '#c78869'
-        },
-        children: [
-          {
-            name: 'Peanuts',
-            value: 1,
-            itemStyle: {
-              color: '#d4ad12'
-            }
-          },
-          {
-            name: 'Hazelnut',
-            value: 1,
-            itemStyle: {
-              color: '#9d5433'
-            }
-          },
-          {
-            name: 'Almond',
-            value: 1,
-            itemStyle: {
-              color: '#c89f83'
-            }
-          }
-        ]
-      },
-      {
-        name: 'Cocoa',
-        itemStyle: {
-          color: '#bb764c'
-        },
-        children: [
-          {
-            name: 'Chocolate',
-            value: 1,
-            itemStyle: {
-              color: '#692a19'
-            }
-          },
-          {
-            name: 'Dark Chocolate',
-            value: 1,
-            itemStyle: {
-              color: '#470604'
-            }
-          }
-        ]
-      }
-    ]
-  },
-  {
-    name: 'Sweet',
-    itemStyle: {
-      color: '#e65832'
-    },
-    children: [
-      {
-        name: 'Brown Sugar',
-        itemStyle: {
-          color: '#d45a59'
-        },
-        children: [
-          {
-            name: 'Molasses',
-            value: 1,
-            itemStyle: {
-              color: '#310d0f'
-            }
-          },
-          {
-            name: 'Maple Syrup',
-            value: 1,
-            itemStyle: {
-              color: '#ae341f'
-            }
-          },
-          {
-            name: 'Caramelized',
-            value: 1,
-            itemStyle: {
-              color: '#d78823'
-            }
-          },
-          {
-            name: 'Honey',
-            value: 1,
-            itemStyle: {
-              color: '#da5c1f'
-            }
-          }
-        ]
-      },
-      {
-        name: 'Vanilla',
-        value: 1,
-        itemStyle: {
-          color: '#f89a80'
-        }
-      },
-      {
-        name: 'Vanillin',
-        value: 1,
-        itemStyle: {
-          color: '#f37674'
-        }
-      },
-      {
-        name: 'Overall Sweet',
-        value: 1,
-        itemStyle: {
-          color: '#e75b68'
-        }
-      },
-      {
-        name: 'Sweet Aromatics',
-        value: 1,
-        itemStyle: {
-          color: '#d0545f'
-        }
-      }
-    ]
-  }
-];
+    }
+]
 
 module.exports = {
-  title: {
-    text: 'WORLD COFFEE RESEARCH SENSORY LEXICON',
-    subtext: 'Source: https://worldcoffeeresearch.org/work/sensory-lexicon/',
-    textStyle: {
-      fontSize: 14,
-      align: 'center'
-    },
-    subtextStyle: {
-      align: 'center'
-    },
-    sublink: 'https://worldcoffeeresearch.org/work/sensory-lexicon/'
+    series: {
+        type: 'sunburst',
+        data: data,
+        radius: [0, '95%'],
+        sort: undefined,
+        emphasis: {
+            focus: 'ancestor'
+        },
+        levels: [
+            {},
+            {
+                r0: '15%',
+                r: '35%',
+                itemStyle: {
+                    borderWidth: 2
+                },
+                label: {
+                    rotate: 'tangential'
+                }
+            },
+            {
+                r0: '35%',
+                r: '70%',
+                label: {
+                    align: 'right'
+                }
+            },
+            {
+                r0: '70%',
+                r: '72%',
+                label: {
+                    position: 'outside',
+                    padding: 5,
+                    silent: false,
+                },
+                itemStyle: {
+                    borderWidth: 3
+                }
+            }
+        ]
+    }
+}
+
+
+```
+
+:::
+
+::: echarts 分类支出
+
+```json
+{
+  "tooltip": {
+    "trigger": "axis",
+    "axisPointer": {
+      "type": "shadow"
+    }
   },
-  series: {
-    type: 'sunburst',
-
-    data: data,
-    radius: [0, '95%'],
-    sort: undefined,
-
-    emphasis: {
-      focus: 'ancestor'
+  "legend": {},
+  "xAxis": {
+    "type": "value"
+  },
+  "yAxis": {
+    "type": "category",
+    "data": ["2018", "2019", "2020", "2021", "2022"]
+  },
+  "series": [
+    {
+      "name": "固定资产税",
+      "type": "bar",
+      "stack": "total",
+      "label": {
+        "show": true
+      },
+      "emphasis": {
+        "focus": "series"
+      },
+      "data": [0, 48500, 48500, 45300, 123600]
     },
+    {
+      "name": "水",
+      "type": "bar",
+      "stack": "total",
+      "label": {
+        "show": true
+      },
+      "emphasis": {
+        "focus": "series"
+      },
+      "data": [1792, 10786, 10956, 10956, 5478]
+    },
+    {
+      "name": "煤气",
+      "type": "bar",
+      "stack": "total",
+      "label": {
+        "show": true
+      },
+      "emphasis": {
+        "focus": "series"
+      },
+      "data": [5381, 18056, 0, 0, 0]
+    }
+  ]
+}
+```
 
-    levels: [
-      {},
-      {
-        r0: '15%',
-        r: '35%',
-        itemStyle: {
-          borderWidth: 2
-        },
-        label: {
-          rotate: 'tangential'
-        }
-      },
-      {
-        r0: '35%',
-        r: '70%',
-        label: {
-          align: 'right'
-        }
-      },
-      {
-        r0: '70%',
-        r: '72%',
-        label: {
-          position: 'outside',
-          padding: 3,
-          silent: false,
-          formatter: '{b}: {@value}'
-        },
-        itemStyle: {
-          borderWidth: 3
-        }
+:::
+
+::: echarts 余额
+
+```json
+{
+  "polar": {
+      "radius": [30, "80%"]
+    },
+  "angleAxis": {
+      "max": 400000,
+      "startAngle": 75
+    },
+  "radiusAxis": {
+      "type": "category",
+      "data": ["支出", "转账"]
+    },
+  "tooltip": {},
+  "series": {
+      "type": "bar",
+      "data": [361305, 400000],
+      "coordinateSystem": "polar",
+      "label": {
+        "show": true,
+        "position": "middle",
+        "formatter": "{b}: {c}"
       }
-    ]
-  }
-};
+    }
+}
 ```
 
 :::
