@@ -63,628 +63,168 @@ tag:
 | **2**    | 09/09/2018 | 1185     | 0     | 1185   | 0         | 0      |
 | **1**    | 08/08/2018 | 0        | 0     | 0      | 0         | 100000 |
 
-::: echarts 分年度、分类、分项支出统计图
+::: echarts 分年度支出统计图
 
 ```js
 
-var data = [
-    {
-        name: '2022',
-        itemStyle: {
-            color: '#da0d68'
-        },
-        children: [
-            {
-                name: '水',
-                itemStyle: {
-                    color: '#975e6d'
-                },
-                children: [
-                    {
-                        name: '2022-06-27',
-                        value: 1826,
-                        itemStyle: {
-                            color: '#f99e1c'
-                        }
-                    },
-                    {
-                        name: '2022-04-22',
-                        value: 1826,
-                        itemStyle: {
-                            color: '#ef5a78'
-                        }
-                    },
-                    {
-                        name: '2022-02-21',
-                        value: 1826,
-                        itemStyle: {
-                            color: '#f7f1bd'
-                        }
-                    }
-                ]
-            },
-            {
-                name: '固定资产税',
-                itemStyle: {
-                    color: '#e0719c'
-                },
-                children: [
-                    {
-                        name: '2022-05-30',
-                        value: 109600,
-                        itemStyle: {
-                            color: '#ef5a78'
-                        }
-                    },
-                    {
-                        name: '2022-02-21',
-                        value: 14000,
-                        itemStyle: {
-                            color: '#f7f1bd'
-                        }
-                    }
-                ]
-            }
-        ]
-    },
-    {
-        name: '2021',
-        itemStyle: {
-            color: '#da1d23'
-        },
-        children: [
-            {
-                name: '水',
-                itemStyle: {
-                    color: '#dd4c51'
-                },
-                children: [
-                    {
-                        name: '2021-12-24',
-                        value: 1826,
-                        itemStyle: {
-                            color: '#3e0317'
-                        }
-                    },
-                    {
-                        name: '2021-10-26',
-                        value: 1826,
-                        itemStyle: {
-                            color: '#e62969'
-                        }
-                    },
-                    {
-                        name: '2021-08-27',
-                        value: 1826,
-                        itemStyle: {
-                            color: '#6569b0'
-                        }
-                    },
-                    {
-                        name: '2021-06-25',
-                        value: 1826,
-                        itemStyle: {
-                            color: '#ef2d36'
-                        }
-                    },
-                    {
-                        name: '2021-04-30',
-                        value: 1826,
-                        itemStyle: {
-                            color: '#b53b54'
-                        }
-                    },
-                    {
-                        name: '2021-02-28',
-                        value: 1826,
-                        itemStyle: {
-                            color: '#a5446f'
-                        }
-                    }
-                ]
-            },
-            {
-                name: '固定资产税',
-                itemStyle: {
-                    color: '#c94a44'
-                },
-                children: [
-                    {
-                        name: '2021-12-24',
-                        value: 14000,
-                        itemStyle: {
-                            color: '#f2684b'
-                        }
-                    },
-                    {
-                        name: '2021-07-29',
-                        value: 14000,
-                        itemStyle: {
-                            color: '#e73451'
-                        }
-                    },
-                    {
-                        name: '2021-05-31',
-                        value: 17300,
-                        itemStyle: {
-                            color: '#e65656'
-                        }
-                    },
-                    {
-                        name: '2021-02-28',
-                        value: 16000,
-                        itemStyle: {
-                            color: '#f89a1c'
-                        }
-                    }
-                ]
-            }
-        ]
-    },
-    {
-        name: '2020',
-        itemStyle: {
-            color: '#dd4c51'
-        },
-        children: [
-            {
-                name: '水',
-                itemStyle: {
-                    color: '#dd4c51'
-                },
-                children: [
-                    {
-                        name: '2020-12-30',
-                        value: 1826,
-                        itemStyle: {
-                            color: '#3e0317'
-                        }
-                    },
-                    {
-                        name: '2020-10-27',
-                        value: 1826,
-                        itemStyle: {
-                            color: '#e62969'
-                        }
-                    },
-                    {
-                        name: '2020-08-31',
-                        value: 1826,
-                        itemStyle: {
-                            color: '#6569b0'
-                        }
-                    },
-                    {
-                        name: '2020-07-01',
-                        value: 1826,
-                        itemStyle: {
-                            color: '#ef2d36'
-                        }
-                    },
-                    {
-                        name: '2020-04-28',
-                        value: 1826,
-                        itemStyle: {
-                            color: '#b53b54'
-                        }
-                    },
-                    {
-                        name: '2020-02-27',
-                        value: 1826,
-                        itemStyle: {
-                            color: '#a5446f'
-                        }
-                    }
-                ]
-            },
-            {
-                name: '固定资产税',
-                itemStyle: {
-                    color: '#c94a44'
-                },
-                children: [
-                    {
-                        name: '2020-12-30',
-                        value: 16000,
-                        itemStyle: {
-                            color: '#f2684b'
-                        }
-                    },
-                    {
-                        name: '2020-07-28',
-                        value: 16000,
-                        itemStyle: {
-                            color: '#e73451'
-                        }
-                    },
-                    {
-                        name: '2020-06-01',
-                        value: 16500,
-                        itemStyle: {
-                            color: '#e65656'
-                        }
-                    },
-                    {
-                        name: '2020-02-27',
-                        value: 16000,
-                        itemStyle: {
-                            color: '#f89a1c'
-                        }
-                    }
-                ]
-            }
-        ]
-    },
-    {
-        name: '2019',
-        itemStyle: {
-            color: '#f7a128'
-        },
-        children: [
-            {
-                name: '水',
-                itemStyle: {
-                    color: '#f26355'
-                },
-                children: [
-                    {
-                        name: '2019-12-26',
-                        value: 1826,
-                        itemStyle: {
-                            color: '#3e0317'
-                        }
-                    },
-                    {
-                        name: '2019-10-28',
-                        value: 1792,
-                        itemStyle: {
-                            color: '#e62969'
-                        }
-                    },
-                    {
-                        name: '2019-08-28',
-                        value: 1792,
-                        itemStyle: {
-                            color: '#6569b0'
-                        }
-                    },
-                    {
-                        name: '2019-06-26',
-                        value: 1792,
-                        itemStyle: {
-                            color: '#ef2d36'
-                        }
-                    },
-                    {
-                        name: '2019-04-22',
-                        value: 1792,
-                        itemStyle: {
-                            color: '#b53b54'
-                        }
-                    },
-                    {
-                        name: '2019-02-15',
-                        value: 1792,
-                        itemStyle: {
-                            color: '#a5446f'
-                        }
-                    }
-                ]
-            },
-            {
-                name: '煤气',
-                itemStyle: {
-                    color: '#e2631e'
-                },
-                children: [
-                    {
-                        name: '2019-12-26',
-                        value: 2066,
-                        itemStyle: {
-                            color: '#3e0317'
-                        }
-                    },
-                    {
-                        name: '2019-12-16',
-                        value: 1296,
-                        itemStyle: {
-                            color: '#e62969'
-                        }
-                    },
-                    {
-                        name: '2019-11-13',
-                        value: 1271,
-                        itemStyle: {
-                            color: '#6569b0'
-                        }
-                    },
-                    {
-                        name: '2019-09-06',
-                        value: 1242,
-                        itemStyle: {
-                            color: '#ef2d36'
-                        }
-                    },
-                    {
-                        name: '2019-07-30',
-                        value: 1242,
-                        itemStyle: {
-                            color: '#b53b54'
-                        }
-                    },
-                    {
-                        name: '2019-06-26',
-                        value: 1242,
-                        itemStyle: {
-                            color: '#a5446f'
-                        }
-                    },
-                    {
-                        name: '2019-05-27',
-                        value: 1242,
-                        itemStyle: {
-                            color: '#3e0317'
-                        }
-                    },
-                    {
-                        name: '2019-04-12',
-                        value: 1242,
-                        itemStyle: {
-                            color: '#e62969'
-                        }
-                    },
-                    {
-                        name: '2019-04-05',
-                        value: 3764,
-                        itemStyle: {
-                            color: '#6569b0'
-                        }
-                    },
-                    {
-                        name: '2019-02-08',
-                        value: 1242,
-                        itemStyle: {
-                            color: '#ef2d36'
-                        }
-                    },
-                    {
-                        name: '2019-01-09',
-                        value: 2207,
-                        itemStyle: {
-                            color: '#b53b54'
-                        }
-                    }
-                ]
-            },
-            {
-                name: '固定资产税',
-                itemStyle: {
-                    color: '#fde404'
-                },
-                children: [
-                    {
-                        name: '2019-12-26',
-                        value: 16000,
-                        itemStyle: {
-                            color: '#f2684b'
-                        }
-                    },
-                    {
-                        name: '2019-07-30',
-                        value: 16000,
-                        itemStyle: {
-                            color: '#e73451'
-                        }
-                    },
-                    {
-                        name: '2010-05-27',
-                        value: 16500,
-                        itemStyle: {
-                            color: '#e65656'
-                        }
-                    }
-                ]
-            }
-        ]
-    },
-    {
-        name: '2018',
-        itemStyle: {
-            color: '#da0d68'
-        },
-        children: [
-            {
-                name: '水',
-                itemStyle: {
-                    color: '#975e6d'
-                },
-                children: [
-                    {
-                        name: '2018-12-18',
-                        value: 1792,
-                        itemStyle: {
-                            color: '#f99e1c'
-                        }
-                    }
-                ]
-            },
-            {
-                name: '煤气',
-                itemStyle: {
-                    color: '#e0719c'
-                },
-                children: [
-                    {
-                        name: '2018-12-10',
-                        value: 1342,
-                        itemStyle: {
-                            color: '#ef5a78'
-                        }
-                    },
-                    {
-                        name: '2018-11-08',
-                        value: 1512,
-                        itemStyle: {
-                            color: '#f7f1bd'
-                        }
-                    },
-                    {
-                        name: '2018-10-01',
-                        value: 1342,
-                        itemStyle: {
-                            color: '#e65656'
-                        }
-                    },
-                    {
-                        name: '2018-09-09',
-                        value: 1185,
-                        itemStyle: {
-                            color: '#f89a1c'
-                        }
-                    }
-                ]
-            }
-        ]
-    }
-]
+
 
 module.exports = {
-    series: {
-        type: 'sunburst',
-        data: data,
-        radius: [0, '95%'],
-        sort: undefined,
-        emphasis: {
-            focus: 'ancestor'
+      legend: {},
+      tooltip: {
+        formatter: '{c}'
+      },
+      color: [
+          '#61a0a8',
+          '#2f4554',
+          '#c23531',
+          '#bda29a',
+          '#c4ccd3'
+        ],
+      dataset: [
+        {
+          dimensions: ['项目', '支出', '日期'],
+          source: [
+            ['水', 1826, '2022-06-27'],
+            ['税', 109600, '2022-05-30'],
+            ['水', 1826, '2022-04-22'],
+            ['水', 1826, '2022-02-21'],
+            ['税', 14000, '2022-02-21'],
+            ['水', 1826, '2021-12-24'],
+            ['税', 14000, '2021-12-24'],
+            ['水', 1826, '2021-10-26'],
+            ['水', 1826, '2021-08-27'],
+            ['税', 14000, '2021-07-29'],
+            ['水', 1826, '2021-06-25'],
+            ['税', 17300, '2021-05-31'],
+            ['水', 1826, '2021-04-30'],
+            ['水', 1826, '2021-02-28'],
+            ['税', 16000, '2021-02-28'],
+            ['水', 1826, '2020-12-30'],
+            ['税', 16000, '2020-12-30'],
+            ['水', 1826, '2020-10-27'],
+            ['水', 1826, '2020-08-31'],
+            ['税', 16000, '2020-07-28'],
+            ['水', 1826, '2020-07-01'],
+            ['税', 16500, '2020-06-01'],
+            ['水', 1826, '2020-04-28'],
+            ['水', 1826, '2020-02-27'],
+            ['税', 16000, '2020-02-27'],
+            ['水', 1826, '2019-12-26'],
+            ['煤气', 2066, '2019-12-26'],
+            ['税', 16000, '2019-12-26'],
+            ['煤气', 1296, '2019-12-16'],
+            ['煤气', 1271, '2019-11-13'],
+            ['水', 1792, '2019-10-28'],
+            ['煤气', 1242, '2019-09-06'],
+            ['水', 1792, '2019-08-28'],
+            ['煤气', 1242, '2019-07-30'],
+            ['税', 16000, '2019-07-30'],
+            ['水', 1792, '2019-06-26'],
+            ['煤气', 1242, '2019-06-26'],
+            ['煤气', 1242, '2019-05-27'],
+            ['税', 16500, '2019-05-27'],
+            ['水', 1792, '2019-04-22'],
+            ['煤气', 1242, '2019-04-12'],
+            ['煤气', 3764, '2019-04-05'],
+            ['水', 1792, '2019-02-15'],
+            ['煤气', 1242, '2019-02-08'],
+            ['煤气', 2207, '2019-01-09'],
+            ['水', 1792, '2018-12-18'],
+            ['煤气', 1342, '2018-12-10'],
+            ['煤气', 1512, '2018-11-08'],
+            ['煤气', 1342, '2018-10-01'],
+            ['煤气', 1185, '2018-09-09']
+          ]
         },
-        levels: [
-            {},
-            {
-                r0: '15%',
-                r: '35%',
-                itemStyle: {
-                    borderWidth: 2
-                },
-                label: {
-                    rotate: 'tangential'
-                }
+        {
+          transform: {
+            type: 'filter',
+            config: { dimension: '日期', gt: '2022', parser: 'time' }
+          }
+        },
+        {
+          transform: {
+            type: 'filter',
+            config: { dimension: '日期', gt: '2021', lt: '2022', parser: 'time' }
+          }
+        },
+        {
+          transform: {
+            type: 'filter',
+            config: { dimension: '日期', gt: '2020', lt: '2021', parser: 'time' }
+          }
+        },
+        {
+          transform: {
+            type: 'filter',
+            config: { dimension: '日期', gt: '2019', lt: '2020', parser: 'time' }
+          }
+        },
+        {
+          transform: {
+            type: 'filter',
+            config: { dimension: '日期', gt: '2018', lt: '2019', parser: 'time' }
+          }
+        }
+      ],
+      series: [
+        {
+          type: 'pie',
+          radius: [20,50],
+          center: ['25%', '17%'],
+          itemStyle: {
+              borderColor: '#fff',
+              borderWidth: 1
             },
-            {
-                r0: '35%',
-                r: '70%',
-                label: {
-                    align: 'right'
-                }
+          datasetIndex: 1
+        },
+        {
+          type: 'pie',
+          radius: [20,50],
+          center: ['75%', '17%'],
+          itemStyle: {
+              borderColor: '#fff',
+              borderWidth: 1
             },
-            {
-                r0: '70%',
-                r: '72%',
-                label: {
-                    position: 'outside',
-                    padding: 5,
-                    silent: false,
-                },
-                itemStyle: {
-                    borderWidth: 3
-                }
-            }
-        ]
+          datasetIndex: 2
+        },
+        {
+          type: 'pie',
+          radius: [20,50],
+          center: ['25%', '50%'],
+          itemStyle: {
+              borderColor: '#fff',
+              borderWidth: 1
+            },
+          datasetIndex: 3
+        },
+        {
+          type: 'pie',
+          radius: [20,50],
+          center: ['75%', '50%'],
+          itemStyle: {
+              borderColor: '#fff',
+              borderWidth: 1
+            },
+          datasetIndex: 4
+        },
+        {
+          type: 'pie',
+          radius: [20,50],
+          center: ['25%', '83%'],
+          itemStyle: {
+              borderColor: '#fff',
+              borderWidth: 1
+            },
+          datasetIndex: 5
+        }
+      ]
     }
-}
 
 
-```
 
-:::
 
-::: echarts 分类支出
-
-```json
-{
-  "tooltip": {
-    "trigger": "axis",
-    "axisPointer": {
-      "type": "shadow"
-    }
-  },
-  "legend": {},
-  "xAxis": {
-    "type": "value"
-  },
-  "yAxis": {
-    "type": "category",
-    "data": ["2018", "2019", "2020", "2021", "2022"]
-  },
-  "series": [
-    {
-      "name": "固定资产税",
-      "type": "bar",
-      "stack": "total",
-      "label": {
-        "show": true
-      },
-      "emphasis": {
-        "focus": "series"
-      },
-      "data": [0, 48500, 48500, 45300, 123600]
-    },
-    {
-      "name": "水",
-      "type": "bar",
-      "stack": "total",
-      "label": {
-        "show": true
-      },
-      "emphasis": {
-        "focus": "series"
-      },
-      "data": [1792, 10786, 10956, 10956, 5478]
-    },
-    {
-      "name": "煤气",
-      "type": "bar",
-      "stack": "total",
-      "label": {
-        "show": true
-      },
-      "emphasis": {
-        "focus": "series"
-      },
-      "data": [5381, 18056, 0, 0, 0]
-    }
-  ]
-}
-```
-
-:::
-
-::: echarts 余额
-
-```json
-{
-  "polar": {
-      "radius": [30, "80%"]
-    },
-  "angleAxis": {
-      "max": 400000,
-      "startAngle": 75
-    },
-  "radiusAxis": {
-      "type": "category",
-      "data": ["支出", "转账"]
-    },
-  "tooltip": {},
-  "series": {
-      "type": "bar",
-      "data": [361305, 400000],
-      "coordinateSystem": "polar",
-      "label": {
-        "show": true,
-        "position": "middle",
-        "formatter": "{b}: {c}"
-      }
-    }
-}
 ```
 
 :::
