@@ -12,3 +12,5 @@ tag:
 ## 支出固定资产税
 
 :yen: 16500
+
+[2020-06-01.jpg](https://i.postimg.cc/Jz818tYQ/2020-06-01.jpg)

@@ -12,3 +12,5 @@ tag:
 ## 支出水
 
 :yen: 1792
+
+[2019-10-28.jpg](https://i.postimg.cc/6pnYdmYc/2019-10-28.jpg)

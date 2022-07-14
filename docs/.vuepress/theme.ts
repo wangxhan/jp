@@ -33,13 +33,13 @@ export default hopeTheme({
   },
 
   plugins: {
-    
+
     blog: {
       autoExcerpt: true,
     },
 
     mdEnhance: {
-      echarts: true,
+      echarts: true
     },
   },
 });

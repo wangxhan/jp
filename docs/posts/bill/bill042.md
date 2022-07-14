@@ -12,3 +12,5 @@ tag:
 ## 支出固定资产税
 
 :yen: 109600
+
+[2022-05-30.jpg](https://i.postimg.cc/kMwGfQjd/2022-05-30.jpg)

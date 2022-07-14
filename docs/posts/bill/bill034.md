@@ -12,3 +12,5 @@ tag:
 ## 支出水
 
 :yen: 1826
+
+[2021-06-25.jpg](https://i.postimg.cc/k4qMyGK4/2021-06-25.jpg)

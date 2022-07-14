@@ -12,3 +12,5 @@ tag:
 ## 支出煤气
 
 :yen: 1296
+
+[2019-12-16.jpg](https://i.postimg.cc/8c7bsK7h/2019-12-16.jpg)

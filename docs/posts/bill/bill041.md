@@ -12,3 +12,5 @@ tag:
 ## 支出水
 
 :yen: 1826
+
+[2022-04-22.jpg](https://i.postimg.cc/SQG2HFx3/2022-04-22.jpg)

@@ -13,4 +13,4 @@ tag:
 
 :yen: 1792
 
-# 
+[2019-08-28.jpg](https://i.postimg.cc/zXRjrQZN/2019-08-28.jpg)
