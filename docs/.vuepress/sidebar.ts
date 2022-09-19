@@ -13,6 +13,7 @@ export default sidebar([
         icon: "note",
         collapsable: true,
         children: [
+          "bill044",
           "bill043", 
           "bill042", 
           "bill041", 
