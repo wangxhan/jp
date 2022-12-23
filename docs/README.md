@@ -5,10 +5,8 @@ icon: home
 title: 主页
 heroImage: /logo.svg
 heroText: 吕大爷的传达室
-bgImage: /bgimage.jpg
-bgImageStyle: {
-  height: 300px
-}
+bgImage: /bgimage_xmas.jpg
+bgImageStyle: { height: 300px }
 tagline: 感谢数年如一坚持的人
 projects:
   - icon: project
