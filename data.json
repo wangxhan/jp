@@ -1,5 +1,12 @@
 [
   {
+    "date": "20251103",
+    "type": "jpg",
+    "category": "水费",
+    "amount": 1826,
+    "receipt": "./receipts/20251103_水费.jpg"
+  },
+  {
     "date": "20240501",
     "type": "jpg",
     "category": "水费",
