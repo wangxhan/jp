@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>WXH发票对账结果看板 v5.0</title>
+    <style>
+        :root { --primary-color: #2b2e4a; --accent-color: #e84545; --bg-color: #f4f4f7; --success-color: #2e7d32; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg-color); margin: 0; padding: 30px; }
+        .dashboard { max-width: 1200px; margin: 0 auto; }
+        .header { background: var(--primary-color); color: white; padding: 25px 30px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        
+        /* 本地离线兜底粘贴箱样式 */
+        .local-fallback-box { display: none; background: #fff3e0; border: 2px dashed #ffb74d; border-radius: 8px; padding: 20px; margin-bottom: 20px; }
+        .local-fallback-box textarea { width: 100%; height: 80px; margin-top: 10px; border: 1px solid #ccc; border-radius: 4px; padding: 10px; font-family: monospace; box-sizing: border-box; }
+        .local-fallback-box button { background: #ff9800; color: white; border: none; padding: 8px 16px; border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .local-fallback-box button:hover { background: #f57c00; }
+
+        /* 📅 年度切换标签页样式 */
+        .year-tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #ddd; padding-bottom: 10px; }
+        .year-tab { background: #e0e0e0; color: #333; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; border: none; font-size: 14px; transition: all 0.2s; }
+        .year-tab:hover { background: #ccc; }
+        .year-tab.active { background: var(--primary-color); color: white; box-shadow: 0 3px 8px rgba(0,0,0,0.15); }
+
+        .summary-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); border-left: 5px solid var(--primary-color); transition: transform 0.2s; }
+        .card:hover { transform: translateY(-2px); }
+        .card.total { border-left-color: var(--accent-color); }
+        .card h3 { margin: 0 0 10px 0; color: #666; font-size: 14px; }
+        .card p { margin: 0; font-size: 24px; font-weight: bold; color: #333; }
+        
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
+        th, td { padding: 15px 20px; text-align: left; border-bottom: 1px solid #eee; }
+        th { background: #eaecf1; color: #333; font-weight: 600; font-size: 14px; }
+        td { font-size: 14px; }
+        .btn-view { background: #3282b8; color: white; padding: 6px 14px; text-decoration: none; border-radius: 4px; font-size: 12px; font-weight: bold; display: inline-block; }
+        .btn-view:hover { background: #0f4c75; }
+        
+        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; cursor: zoom-out; }
+        .overlay img { max-width: 90%; max-height: 90%; object-fit: contain; border-radius: 4px; box-shadow: 0 4px 25px rgba(0,0,0,0.5); }
+    </style>
+</head>
+<body>
+
+<div class="dashboard">
+    <div class="header">
+        <h1 style="margin:0; font-size: 26px;">📊 WXH发票对账自动化看板 (分年度统计版)</h1>
+        <p style="margin:8px 0 0 0; opacity: 0.8; font-size: 14px;">智能化数据对账：系统自动对账底稿提取年份，点选即可切换独立年度审计报表。</p>
+    </div>
+
+    <div class="local-fallback-box" id="fallbackBox">
+        <strong style="color: #e65100;">💡 WXH系统本地安全提示：</strong>
+        <span>直接双击打开时无法自动读取磁盘上的 data.json。</span>
+        <br><span style="font-size: 13px; color: #666;">请直接在下方粘贴从 <b>compress.html</b> 复制出来的 JSON 代码：</span>
+        <textarea id="jsonPasteInput" placeholder="[{ 'date': '20260707', ... }]"></textarea>
+        <button onclick="loadPastedJSON()">⚡ 立即本地解析对账</button>
+    </div>
+
+    <div class="year-tabs" id="yearTabsContainer"></div>
+
+    <div class="summary-cards" id="summaryCards">
+        <div class="card total">
+            <h3>📈 当年累计报销总额</h3>
+            <p id="totalAmount">¥0.00</p>
+        </div>
+        <div class="card">
+            <h3>📑 当年报销发票张数</h3>
+            <p id="totalCount">0 张</p>
+        </div>
+    </div>
+
+    <h2 style="color: var(--primary-color); font-size: 18px; margin-bottom: 15px;">📃 当年对账稽核明细清单</h2>
+    <table>
+        <thead>
+            <tr>
+                <th width="20%">发票日期</th>
+                <th width="25%">费用分类</th>
+                <th width="25%">结算金额</th>
+                <th width="30%">凭证核对 (GitHub 路径)</th>
+            </tr>
+        </thead>
+        <tbody id="auditTableBody">
+            <tr><td colspan="4" style="text-align:center; color:#999; padding: 30px;">正在连接底层数据底座...</td></tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="overlay" id="imgOverlay" onclick="this.style.display='none'">
+    <img id="overlayImg" src="" alt="发票凭证大图">
+</div>
+
+<script>
+    let globalData = [];      // 缓存完整的底稿数据
+    let availableYears = [];  // 存放解析出的所有不同年份
+    let currentYear = "";     // 当前选中的查看年份
+
+    document.addEventListener("DOMContentLoaded", function() {
+        fetch('./data.json')
+            .then(response => {
+                if (!response.ok) throw new Error('HTTP 状态码异常');
+                return response.json();
+            })
+            .then(data => {
+                initDashboardData(data);
+            })
+            .catch(err => {
+                console.warn("已启动离线安全对账模式。");
+                document.getElementById('fallbackBox').style.display = 'block';
+                document.getElementById('auditTableBody').innerHTML = `
+                    <tr><td colspan="4" style="text-align:center; color:#e65100; padding: 20px; font-weight: bold;">⚠️ 处于本地离线模式：请在上方输入框内粘贴 WXH系统的 JSON 到底稿中。</td></tr>
+                `;
+            });
+    });
+
+    function loadPastedJSON() {
+        const rawText = document.getElementById('jsonPasteInput').value.trim();
+        if(!rawText) { alert("底稿内容不能为空！"); return; }
+        try {
+            const data = JSON.parse(rawText);
+            initDashboardData(data);
+            alert("🎉 WXH系统提示：本地分年度底稿对账成功！");
+        } catch (e) {
+            alert("❌ 底稿数据格式有误，请确保是标准的 JSON 数组结构。");
+        }
+    }
+
+    // 第一步：解析数据中的全部年份
+    function initDashboardData(data) {
+        if (!Array.isArray(data) || data.length === 0) {
+            document.getElementById('auditTableBody').innerHTML = `<tr><td colspan="4" style="text-align:center; color:#999; padding: 30px;">目前底稿内无任何有效账目数据。</td></tr>`;
+            return;
+        }
+        
+        globalData = data;
+        
+        // 提取并清洗所有不重复的年份
+        const yearsSet = new Set();
+        data.forEach(item => {
+            if (item.date && item.date.length >= 4) {
+                const year = item.date.substring(0, 4);
+                yearsSet.add(year);
+            }
+        });
+        
+        // 排序（新年份排前面）
+        availableYears = Array.from(yearsSet).sort((a, b) => b - a);
+        
+        if (availableYears.length === 0) {
+            // 如果数据里没有符合格式的年份，默认给个今年
+            availableYears = [new Date().getFullYear().toString()];
+        }
+        
+        // 默认显示最新的一年
+        currentYear = availableYears[0];
+        
+        // 渲染年份切换标签页
+        renderYearTabs();
+        // 渲染当年报表
+        renderYearlyReport(currentYear);
+    }
+
+    // 第二步：动态生成顶部年度 Tab 标签
+    function renderYearTabs() {
+        const container = document.getElementById('yearTabsContainer');
+        container.innerHTML = availableYears.map(year => `
+            <button class="year-tab ${year === currentYear ? 'active' : ''}" onclick="switchYear('${year}')">
+                📅 ${year} 年
+            </button>
+        `).join('');
+    }
+
+    // 标签页切换触发函数
+    function switchYear(year) {
+        currentYear = year;
+        renderYearTabs();
+        renderYearlyReport(year);
+    }
+
+    // 第三步：精确渲染指定年份的对账结果
+    function renderYearlyReport(year) {
+        let totalAmount = 0;
+        let categoryTotals = {};
+        const tbody = document.getElementById('auditTableBody');
+        
+        // 过滤出选中年份的数据
+        const yearlyFilteredData = globalData.filter(item => item.date && item.date.startsWith(year));
+
+        // 重置汇总区域（仅保留初始的两张核心大卡片）
+        const cardsContainer = document.getElementById('summaryCards');
+        cardsContainer.innerHTML = `
+            <div class="card total"><h3>📈 ${year}年 累计报销总额</h3><p id="totalAmount">¥0.00</p></div>
+            <div class="card"><h3>📑 ${year}年 报销发票张数</h3><p id="totalCount">0 张</p></div>
+        `;
+
+        if (yearlyFilteredData.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#999; padding: 30px;">${year} 年度无任何账目记录。</td></tr>`;
+            document.getElementById('totalAmount').innerText = `¥0.00`;
+            document.getElementById('totalCount').innerText = `0 张`;
+            return;
+        }
+
+        // 渲染过滤后的当年明细
+        const tableRows = yearlyFilteredData.map(item => {
+            const amount = parseFloat(item.amount) || 0;
+            totalAmount += amount;
+            
+            // 归类细分
+            categoryTotals[item.category] = (categoryTotals[item.category] || 0) + amount;
+
+            // 日期美化 YYYYMMDD -> YYYY-MM-DD
+            const formattedDate = item.date.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3');
+            
+            const receiptAction = (item.receipt && item.receipt !== "") 
+                ? `<a href="javascript:void(0)" class="btn-view" onclick="zoomImage('${item.receipt}')">👁️ 查看合规发票</a>`
+                : `<span style="color:#aaa; font-style:italic;">无发票物理件</span>`;
+
+            return `
+                <tr>
+                    <td><b style="color:#1e3d59;">${formattedDate}</b></td>
+                    <td><span style="background:#eef1f6; color:#333; padding:4px 10px; border-radius:12px; font-size:12px; font-weight:bold;">${item.category}</span></td>
+                    <td style="font-weight:bold; color:var(--success-color);">¥${amount.toFixed(2)}</td>
+                    <td>${receiptAction}</td>
+                </tr>
+            `;
+        }).join('');
+
+        tbody.innerHTML = tableRows;
+
+        // 更新核心对账指标数值
+        document.getElementById('totalAmount').innerText = `¥${totalAmount.toFixed(2)}`;
+        document.getElementById('totalCount').innerText = `${yearlyFilteredData.length} 张`;
+
+        // 动态追加当年细分消费小卡片
+        Object.keys(categoryTotals).forEach(cat => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `<h3>📁 ${cat} 细分累计</h3><p>¥${categoryTotals[cat].toFixed(2)}</p>`;
+            cardsContainer.appendChild(card);
+        });
+    }
+
+    function zoomImage(src) {
+        const overlay = document.getElementById('imgOverlay');
+        const overlayImg = document.getElementById('overlayImg');
+        overlayImg.src = src;
+        overlay.style.display = 'flex';
+    }
+</script>
+
+</body>
+</html>

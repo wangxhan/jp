@@ -1,0 +1,79 @@
+[
+  {
+    "date": "20250602",
+    "type": "jpg",
+    "category": "税金",
+    "amount": 28500,
+    "receipt": "./receipts/20250602_税金.jpg"
+  },
+  {
+    "date": "20250731",
+    "type": "jpg",
+    "category": "税金",
+    "amount": 27000,
+    "receipt": "./receipts/20250731_税金.jpg"
+  },
+  {
+    "date": "20250902",
+    "type": "jpg",
+    "category": "水费",
+    "amount": 1826,
+    "receipt": "./receipts/20250902_水费.jpg"
+  },
+  {
+    "date": "20251229",
+    "type": "jpg",
+    "category": "水费",
+    "amount": 1826,
+    "receipt": "./receipts/20251229_水费.jpg"
+  },
+  {
+    "date": "20260105",
+    "type": "jpg",
+    "category": "税金",
+    "amount": 27000,
+    "receipt": "./receipts/20260105_税金.jpg"
+  },
+  {
+    "date": "20250701",
+    "type": "jpg",
+    "category": "水费",
+    "amount": 1826,
+    "receipt": "./receipts/20250701_水费.jpg"
+  },
+  {
+    "date": "20260227",
+    "type": "jpg",
+    "category": "水费",
+    "amount": 1826,
+    "receipt": "./receipts/20260227_水费.jpg"
+  },
+  {
+    "date": "20260302",
+    "type": "jpg",
+    "category": "税金",
+    "amount": 27000,
+    "receipt": "./receipts/20260302_税金.jpg"
+  },
+  {
+    "date": "20260427",
+    "type": "jpg",
+    "category": "水费",
+    "amount": 1826,
+    "receipt": "./receipts/20260427_水费.jpg"
+  },
+  {
+    "date": "20260618",
+    "type": "jpg",
+    "category": "水费",
+    "amount": 1826,
+    "receipt": "./receipts/20260618_水费.jpg"
+  },
+  {
+    "date": "20260526",
+    "type": "jpg",
+    "category": "税金",
+    "amount": 109500,
+    "receipt": "./receipts/20260526_税金.jpg"
+  }
+]

@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>WXH发票智能整理系统 v4.4</title>
+    <style>
+        :root { --primary-color: #1e3d59; --secondary-color: #17b978; --bg-color: #f5f7fa; --warning-color: #d32f2f; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg-color); padding: 20px; margin: 0; }
+        .container { max-width: 1400px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        h2 { color: var(--primary-color); border-bottom: 2px solid var(--primary-color); padding-bottom: 10px; margin-top: 0; }
+        .upload-zone { border: 3px dashed #ccc; border-radius: 8px; padding: 40px; text-align: center; background: #fafafa; cursor: pointer; margin-bottom: 20px; transition: all 0.3s; }
+        .upload-zone:hover { border-color: var(--primary-color); background: #f0f4f8; }
+        .btn-group { margin-bottom: 20px; }
+        button { background-color: var(--primary-color); color: white; border: none; padding: 10px 20px; font-size: 14px; border-radius: 4px; cursor: pointer; margin-right: 10px; font-weight: bold; }
+        button.download-btn { background-color: var(--secondary-color); }
+        button.download-btn:hover { background-color: #149d65; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; table-layout: fixed; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; font-size: 13px; word-break: break-all; }
+        th { background-color: var(--primary-color); color: white; }
+        input, select { padding: 8px 10px; border: 1px solid #ccc; border-radius: 4px; width: 90%; font-size: 14px; box-sizing: border-box; }
+        input:focus, select:focus { border-color: var(--primary-color); outline: 2px solid #1e3d5933; }
+        
+        /* 🚨 重复发票高亮样式 */
+        .duplicate-row { background-color: #ffebee !important; animation: shake 0.4s ease-in-out; }
+        .duplicate-warning { color: var(--warning-color); font-weight: bold; font-size: 11px; display: block; margin-top: 4px; }
+        
+        .preview-img { max-width: 80px; max-height: 80px; object-fit: contain; border-radius: 4px; cursor: zoom-in; border: 1px solid #ddd; transition: transform 0.2s; }
+        .preview-img:hover { transform: scale(1.05); }
+        .status-badge { display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: bold; }
+        .status-loading { background: #fff3e0; color: #ef6c00; }
+        .status-success { background: #e8f5e9; color: #2e7d32; }
+        .json-box { margin-top: 30px; background: #272822; color: #f8f8f2; padding: 20px; border-radius: 6px; font-family: monospace; white-space: pre-wrap; max-height: 200px; overflow-y: auto; }
+        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; cursor: zoom-out; }
+        .overlay img { max-width: 90%; max-height: 90%; object-fit: contain; box-shadow: 0 4px 20px rgba(0,0,0,0.5); border-radius: 4px; }
+        
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 20%, 60% { transform: translateX(-6px); } 40%, 80% { transform: translateX(6px); } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>📊 WXH发票智能整理系统 v4.4 (内置双重内审防重机制)</h2>
+    <p style="color:#666;">💡 <b>内审增强：</b>① 拒绝重复拖入相同图片文件；② 当人工输入的【发票日期】和【金额】与历史行完全一致时，系统会自动将该行**爆红警告**，防止重复记账。</p>
+
+    <div class="upload-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+        <p>📂 <b>点击选择发票</b> 或 <b>将发票/收据图片拖拽到此处</b></p>
+        <p style="font-size: 12px; color: #999;">无OCR，100%本地安全隐私防重处理</p>
+        <input type="file" id="fileInput" multiple accept="image/*" style="display: none;" onchange="handleFiles(this.files)">
+    </div>
+
+    <div class="btn-group">
+        <button class="download-btn" onclick="downloadAll()">💾 一键打包下载全部（已强制缩至≤200K）</button>
+        <button onclick="copyJSON()">📋 复制 GitHub data.json 代码</button>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th width="10%">原图(点击放大)</th>
+                <th width="18%">发票日期 (YYYYMMDD)</th>
+                <th width="15%">结算总金额</th>
+                <th width="15%">费用分类</th>
+                <th width="22%">标准规范文件名</th>
+                <th width="12%">体积控制</th>
+                <th width="8%">操作</th>
+            </tr>
+        </thead>
+        <tbody id="invoiceTableBody"></tbody>
+    </table>
+
+    <h3 style="margin-top:40px; color: var(--primary-color);">📦 GitHub data.json 实时同步底稿</h3>
+    <div class="json-box" id="jsonPreview">[]</div>
+</div>
+
+<div class="overlay" id="imgOverlay" onclick="this.style.display='none'">
+    <img id="overlayImg" src="" alt="发票大图">
+</div>
+
+<script>
+    let invoiceData = [];
+
+    // 拖拽事件捕获
+    const dropZone = document.getElementById('dropZone');
+    dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.style.borderColor = '#1e3d59'; dropZone.style.background = '#f0f4f8'; });
+    dropZone.addEventListener('dragleave', () => { dropZone.style.borderColor = '#ccc'; dropZone.style.background = '#fafafa'; });
+    dropZone.addEventListener('drop', (e) => { e.preventDefault(); dropZone.style.borderColor = '#ccc'; dropZone.style.background = '#fafafa'; handleFiles(e.dataTransfer.files); });
+
+    function handleFiles(files) {
+        if (!files || files.length === 0) return;
+        
+        const fileArray = Array.from(files).filter(f => f.type.startsWith('image/'));
+        fileArray.sort((a, b) => a.name.localeCompare(b.name));
+        
+        let duplicateCount = 0;
+
+        fileArray.forEach(file => {
+            // ====== 🔒 查重维度 A：检查文件大小和物理名称是否完全重复 ======
+            const isFileDuplicate = invoiceData.some(item => item.fileSize === file.size && item.originalName === file.name);
+            if (isFileDuplicate) {
+                duplicateCount++;
+                return; // 直接拦截，跳过此文件
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imgDataUrl = e.target.result;
+                
+                let detectedDate = new Date().toISOString().slice(0,10).replace(/-/g,""); 
+                let detectedAmount = "";
+                const fileName = file.name;
+
+                const dateRegex1 = /(202\d{5})/; 
+                const dateRegex2 = /(202\d)[-/]([01]\d)[-/]([0-3]\d)/;
+                const match1 = fileName.match(dateRegex1);
+                const match2 = fileName.match(dateRegex2);
+
+                if (match1) { detectedDate = match1[1]; } 
+                else if (match2) { detectedDate = `${match2[1]}${match2[2]}${match2[3]}`; }
+
+                const amountRegex = /[_|-](\d+\.\d{2})/;
+                const amountMatch = fileName.match(amountRegex);
+                if (amountMatch) { detectedAmount = amountMatch[1]; }
+
+                const item = {
+                    id: 'inv_' + Math.random().toString(36).substr(2, 9),
+                    date: detectedDate,
+                    amount: detectedAmount,
+                    category: "其他支出",
+                    src: imgDataUrl,
+                    compressedBlob: null,
+                    sizeDisplay: "处理中...",
+                    fileSize: file.size,       // 用于物理查重
+                    originalName: file.name    // 用于物理查重
+                };
+                
+                invoiceData.push(item);
+                appendRowToTable(item);
+                compressImage(item);
+                checkDataDuplicates(); // 触发录入查重检测
+            };
+            reader.readAsDataURL(file);
+        });
+
+        if (duplicateCount > 0) {
+            alert(`⚠️ WXH系统拦截：检测到有 ${duplicateCount} 张发票图片文件已在清单中，已自动过滤，避免重复导入！`);
+        }
+    }
+
+    function appendRowToTable(item) {
+        const tbody = document.getElementById('invoiceTableBody');
+        const tr = document.createElement('tr');
+        tr.id = `row-${item.id}`;
+        
+        const targetName = `${item.date}_${item.category}.jpg`;
+        
+        tr.innerHTML = `
+            <td><img src="${item.src}" class="preview-img" title="点击放大查看原图" onclick="zoomImage('${item.src}')"></td>
+            <td><input type="text" class="input-date" maxlength="8" placeholder="📄 如 20260707" value="${item.date}" oninput="syncData('${item.id}', 'date', this.value)"></td>
+            <td>
+                <input type="number" class="input-amount" step="0.01" placeholder="💰 未识别到金额" value="${item.amount}" oninput="syncData('${item.id}', 'amount', this.value)">
+                <span id="warn-${item.id}" class="duplicate-warning" style="display:none;">⚠️ 账目金额重复，请复核！</span>
+            </td>
+            <td>
+                <select class="select-category" onchange="syncData('${item.id}', 'category', this.value)">
+                    <option value="其他支出" selected>其他支出</option>
+                    <option value="水费">水费</option>
+                    <option value="电费">电费</option>
+                    <option value="煤气费">煤气费</option>
+                    <option value="税金">税金</option>
+                </select>
+            </td>
+            <td><b id="name-${item.id}" style="color:var(--primary-color); font-size:13px;">${targetName}</b></td>
+            <td><span id="badge-${item.id}" class="status-badge status-loading">${item.sizeDisplay}</span></td>
+            <td><button style="background:#e53935; padding:6px 12px;" onclick="deleteRow('${item.id}')">删除</button></td>
+        `;
+        tbody.appendChild(tr);
+        updateJSONPreview();
+    }
+
+    // 🔒 查重维度 B：实时进行金额与日期逻辑查重
+    function checkDataDuplicates() {
+        // 清除所有现有高亮
+        invoiceData.forEach(item => {
+            const rowDom = document.getElementById(`row-${item.id}`);
+            const warnDom = document.getElementById(`warn-${item.id}`);
+            if(rowDom) rowDom.classList.remove('duplicate-row');
+            if(warnDom) warnDom.style.display = 'none';
+        });
+
+        // 建立动态索引库，比对唯一键值：date_amount
+        const seen = {};
+        invoiceData.forEach(item => {
+            // 如果金额为空，不参与查重比对
+            if (!item.amount || item.amount.trim() === "" || parseFloat(item.amount) === 0) return;
+
+            const uniqueKey = `${item.date}_${parseFloat(item.amount).toFixed(2)}`;
+            if (!seen[uniqueKey]) {
+                seen[uniqueKey] = [];
+            }
+            seen[uniqueKey].push(item.id);
+        });
+
+        // 找出所有碰撞重复的 ID 并高亮爆红
+        Object.keys(seen).forEach(key => {
+            if (seen[key].length > 1) {
+                seen[key].forEach(id => {
+                    const rowDom = document.getElementById(`row-${id}`);
+                    const warnDom = document.getElementById(`warn-${id}`);
+                    if(rowDom) rowDom.classList.add('duplicate-row');
+                    if(warnDom) warnDom.style.display = 'block';
+                });
+            }
+        });
+    }
+
+    function syncData(id, field, value) {
+        const item = invoiceData.find(i => i.id === id);
+        if (item) {
+            item[field] = value;
+            document.getElementById(`name-${id}`).innerText = `${item.date}_${item.category}.jpg`;
+            checkDataDuplicates(); // 输入时实时重新内审查重
+            updateJSONPreview();
+        }
+    }
+
+    // Canvas 压缩核心保持不变
+    function compressImage(item) {
+        const img = new Image();
+        img.src = item.src;
+        img.onload = function() {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            let width = img.width; let height = img.height;
+            if (width > 1600) { height = Math.round((1600 * height) / width); width = 1600; }
+            canvas.width = width; canvas.height = height;
+            ctx.drawImage(img, 0, 0, width, height);
+
+            let quality = 0.85;
+            function attemptCompression() {
+                canvas.toBlob((blob) => {
+                    const sizeKB = blob.size / 1024;
+                    if (sizeKB > 200 && quality > 0.1) {
+                        quality -= 0.08;
+                        attemptCompression();
+                    } else {
+                        item.compressedBlob = blob;
+                        item.sizeDisplay = sizeKB.toFixed(1) + " KB";
+                        const badge = document.getElementById(`badge-${item.id}`);
+                        if(badge) { badge.innerText = item.sizeDisplay; badge.className = "status-badge status-success"; }
+                        updateJSONPreview();
+                    }
+                }, 'image/jpeg', quality);
+            }
+            attemptCompression();
+        };
+    }
+
+    function deleteRow(id) {
+        invoiceData = invoiceData.filter(i => i.id !== id);
+        const row = document.getElementById(`row-${id}`);
+        if(row) row.remove();
+        checkDataDuplicates(); // 删除行后重新计算查重
+        updateJSONPreview();
+    }
+
+    function zoomImage(src) {
+        const overlay = document.getElementById('imgOverlay');
+        const overlayImg = document.getElementById('overlayImg');
+        overlayImg.src = src; overlay.style.display = 'flex';
+    }
+
+    function updateJSONPreview() {
+        const jsonArray = invoiceData.map(item => ({
+            date: item.date,
+            type: "jpg",
+            category: item.category,
+            amount: parseFloat(item.amount) || 0.00,
+            receipt: `./receipts/${item.date}_${item.category}.jpg`
+        }));
+        document.getElementById('jsonPreview').innerText = JSON.stringify(jsonArray, null, 2);
+    }
+
+    function copyJSON() {
+        navigator.clipboard.writeText(document.getElementById('jsonPreview').innerText);
+        alert('📋 WXH系统提示：JSON 数据已复制！');
+    }
+
+    function downloadAll() {
+        if(invoiceData.length === 0) { alert('没有可导出的发票数据！'); return; }
+        let count = 0;
+        invoiceData.forEach(item => {
+            if (!item.compressedBlob) return;
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(item.compressedBlob);
+            link.download = `${item.date}_${item.category}.jpg`;
+            document.body.appendChild(link); link.click(); document.body.removeChild(link);
+            count++;
+        });
+        alert(`🎉 WXH系统提示：成功导出 ${count} 张发票！`);
+    }
+</script>
+</body>
+</html>
