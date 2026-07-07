@@ -1,5 +1,40 @@
 [
   {
+    "date": "20181218",
+    "type": "jpg",
+    "category": "水费",
+    "amount": 1792,
+    "receipt": "./receipts/20181218_水费.jpg"
+  },
+  {
+    "date": "20180909",
+    "type": "jpg",
+    "category": "煤气费",
+    "amount": 1185,
+    "receipt": "./receipts/20180909_煤气费.jpg"
+  },
+  {
+    "date": "20181108",
+    "type": "jpg",
+    "category": "煤气费",
+    "amount": 1512,
+    "receipt": "./receipts/20181108_煤气费.jpg"
+  },
+  {
+    "date": "20181115",
+    "type": "jpg",
+    "category": "煤气费",
+    "amount": 1342,
+    "receipt": "./receipts/20181115_煤气费.jpg"
+  },
+  {
+    "date": "20181210",
+    "type": "jpg",
+    "category": "煤气费",
+    "amount": 1342,
+    "receipt": "./receipts/20181210_煤气费.jpg"
+  }
+  {
     "date": "20250602",
     "type": "jpg",
     "category": "税金",
