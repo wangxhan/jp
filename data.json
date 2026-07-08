@@ -2,7 +2,42 @@
   {
     "date": "20250508",
     "category": "资金汇入",
-    "amount": 842000,
+    "amount": 146000,
+    "type": "config",
+    "receipt": ""
+  },  
+  {
+    "date": "20240206",
+    "category": "资金汇入",
+    "amount": 150000,
+    "type": "config",
+    "receipt": ""
+  },  
+  {
+    "date": "20230130",
+    "category": "资金汇入",
+    "amount": 146000,
+    "type": "config",
+    "receipt": ""
+  },  
+  {
+    "date": "20220222",
+    "category": "资金汇入",
+    "amount": 150000,
+    "type": "config",
+    "receipt": ""
+  },  
+  {
+    "date": "20200603",
+    "category": "资金汇入",
+    "amount": 150000,
+    "type": "config",
+    "receipt": ""
+  },  
+  {
+    "date": "20180808",
+    "category": "资金汇入",
+    "amount": 100000,
     "type": "config",
     "receipt": ""
   },  

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>📊 WXH发票对账自动化看板 v6.6 (无损财务清算版)</title>
+    <title>📊 WXH发票对账自动化看板 v7.0 (全局清算版)</title>
     <style>
         :root { --primary-color: #2b2e4a; --accent-color: #e84545; --bg-color: #f4f4f7; --success-color: #2e7d32; --text-main: #333333; --info-color: #0f4c75; }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background-color: var(--bg-color); color: var(--text-main); margin: 0; padding: 30px; line-height: 1.5; }
@@ -15,19 +15,27 @@
         .local-fallback-box button { background: #ff9800; color: white; border: none; padding: 10px 20px; border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 10px; font-size: 14px; transition: background 0.2s; }
         .local-fallback-box button:hover { background: #f57c00; }
 
-        .year-tabs { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #ddd; padding-bottom: 10px; }
-        .year-tab { background: #e0e0e0; color: #333; padding: 10px 24px; border-radius: 6px; font-weight: bold; cursor: pointer; border: none; font-size: 14px; transition: all 0.2s; }
-        .year-tab:hover { background: #ccc; }
-        .year-tab.active { background: var(--primary-color); color: white; box-shadow: 0 3px 8px rgba(0,0,0,0.15); }
-
-        .summary-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        /* 📊 全局总览看板：顶层常驻，独占一行 */
+        .global-summary { background: #eaecf1; padding: 20px; border-radius: 8px; margin-bottom: 25px; border: 1px solid #dcdfe6; }
+        .global-title { margin: 0 0 15px 0; font-size: 16px; font-weight: bold; color: var(--primary-color); display: flex; align-items: center; gap: 6px; }
+        .summary-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+        
         .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.01); border-left: 5px solid var(--primary-color); transition: transform 0.2s, box-shadow 0.2s; }
         .card:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.05); }
         .card.total-income { border-left-color: var(--info-color); }
         .card.total-expense { border-left-color: var(--accent-color); }
         .card.total-balance { border-left-color: var(--success-color); }
-        .card h3 { margin: 0 0 10px 0; color: #666; font-size: 14px; font-weight: 600; }
-        .card p { margin: 0; font-size: 24px; font-weight: bold; color: #222; word-break: break-all; }
+        .card h3 { margin: 0 0 10px 0; color: #666; font-size: 13px; font-weight: 600; }
+        .card p { margin: 0; font-size: 26px; font-weight: bold; color: #222; word-break: break-all; }
+
+        .year-tabs { display: flex; flex-wrap: wrap; gap: 10px; margin: 25px 0 15px 0; border-bottom: 2px solid #ddd; padding-bottom: 10px; }
+        .year-tab { background: #e0e0e0; color: #333; padding: 10px 24px; border-radius: 6px; font-weight: bold; cursor: pointer; border: none; font-size: 14px; transition: all 0.2s; }
+        .year-tab:hover { background: #ccc; }
+        .year-tab.active { background: var(--primary-color); color: white; box-shadow: 0 3px 8px rgba(0,0,0,0.15); }
+
+        .yearly-insights { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .card.yearly-count { border-left-color: #795548; background: #fafafa; }
+        .card.yearly-cat { border-left-color: #607d8b; background: #fff; }
         
         .table-container { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
         table { width: 100%; border-collapse: collapse; text-align: left; }
@@ -48,7 +56,7 @@
 <div class="dashboard">
     <div class="header">
         <h1 style="margin:0; font-size: 26px;">📊 WXH发票对账自动化看板</h1>
-        <p style="margin:8px 0 0 0; opacity: 0.85; font-size: 14px;">[功能升级] 接入自动审计对账引擎，支持“资金汇入”动态截流，实时清算账户余额。</p>
+        <p style="margin:8px 0 0 0; opacity: 0.85; font-size: 14px;">[架构升级] 资金汇入脱离年度切片，顶层常驻全账期总清算流，跨年度全自动轧账。</p>
     </div>
 
     <div class="local-fallback-box" id="fallbackBox">
@@ -58,28 +66,34 @@
         <button onclick="loadPastedJSON()">⚡ 立即加载本地财务底稿</button>
     </div>
 
-    <div class="year-tabs" id="yearTabsContainer"></div>
-
-    <div class="summary-cards" id="summaryCards">
-        <div class="card total-income">
-            <h3>💰 当年累计汇入本金</h3>
-            <p id="totalIncome">¥0.00</p>
-        </div>
-        <div class="card total-expense">
-            <h3>📈 当年累计报销支出</h3>
-            <p id="totalExpense">¥0.00</p>
-        </div>
-        <div class="card total-balance">
-            <h3>⚖️ 实时留存账户余额</h3>
-            <p id="totalBalance">¥0.00</p>
-        </div>
-        <div class="card">
-            <h3>📑 当年报销发票张数</h3>
-            <p id="totalCount">0 张</p>
+    <div class="global-summary">
+        <div class="global-title">🗺️ 全账期财务稽核中心 (跨年度总清算)</div>
+        <div class="summary-cards">
+            <div class="card total-income">
+                <h3>💰 历史累计汇入总额 (本金)</h3>
+                <p id="globalIncome">¥0.00</p>
+            </div>
+            <div class="card total-expense">
+                <h3>📈 历史累计支出总额 (全年度汇总)</h3>
+                <p id="globalExpense">¥0.00</p>
+            </div>
+            <div class="card total-balance">
+                <h3>⚖️ 实时留存账户余额 (总汇入-总支出)</h3>
+                <p id="globalBalance">¥0.00</p>
+            </div>
         </div>
     </div>
 
-    <h2 style="color: var(--primary-color); font-size: 18px; margin: 25px 0 15px 0; font-weight: 600;">📃 当年对账稽核明细清单</h2>
+    <div class="year-tabs" id="yearTabsContainer"></div>
+
+    <div class="yearly-insights" id="yearlyInsightsContainer">
+        <div class="card yearly-count">
+            <h3>📑 当年报销发票张数</h3>
+            <p id="yearlyCountText">0 张</p>
+        </div>
+    </div>
+
+    <h2 style="color: var(--primary-color); font-size: 17px; margin: 20px 0 12px 0; font-weight: 600;">📃 当年对账稽核明细清单</h2>
     <div class="table-container">
         <table>
             <thead>
@@ -102,9 +116,13 @@
 </div>
 
 <script>
-    let globalCleanedData = [];       
+    let globalCleanedData = [];       // 过滤掉汇入本金后的纯发票报销数据
     let availableYears = [];  
     let currentYear = "";     
+    
+    // 全局汇总金额指标变量
+    let gIncomeTotal = 0;
+    let gExpenseTotal = 0;
 
     const currencyFormatter = new Intl.NumberFormat('zh-CN', {
         style: 'decimal', minimumFractionDigits: 2, maximumFractionDigits: 2
@@ -141,18 +159,36 @@
         }
     }
 
+    // 🚀【全局轧账与年度剥离核心清洗算法】
     function processAndInitData(rawStream) {
         if (!Array.isArray(rawStream) || rawStream.length === 0) {
             document.getElementById('auditTableBody').innerHTML = `<tr><td colspan="4" style="text-align:center; color:#999; padding: 30px;">当前底稿仓库无任何账目数据。</td></tr>`;
             return;
         }
 
-        const yearsSet = new Set();
+        // 重置全局累加器
+        gIncomeTotal = 0;
+        gExpenseTotal = 0;
         
-        globalCleanedData = rawStream.map((item, index) => {
-            if (!item) return null;
-            let originalDateStr = item.date ? item.date.toString().trim() : "";
+        const yearsSet = new Set();
+        const temporaryInvoiceArray = [];
+
+        rawStream.forEach((item, index) => {
+            if (!item) return;
             
+            let cleanedAmount = parseFloat(item.amount);
+            if (isNaN(cleanedAmount) || !Number.isFinite(cleanedAmount)) { cleanedAmount = 0.00; }
+
+            // ⚡ 核心修改：判定是否为全局汇入资金
+            if (item.category === "资金汇入") {
+                gIncomeTotal = Math.round((gIncomeTotal + cleanedAmount) * 100) / 100;
+                return; // 🛑 核心拦截：直接返回，不允许资金汇入流向年度发票池和年份提取集！
+            }
+
+            // 累加历史所有年度总支出
+            gExpenseTotal = Math.round((gExpenseTotal + cleanedAmount) * 100) / 100;
+
+            let originalDateStr = item.date ? item.date.toString().trim() : "";
             const matchYear = originalDateStr.match(/\d{4}/);
             let cleanedYear = matchYear ? matchYear[0] : "未录年份";
             
@@ -163,27 +199,25 @@
                 displayDate = `${originalDateStr.substring(0, 4)}-${originalDateStr.substring(4, 6)}-${originalDateStr.substring(6, 8)}`;
             }
 
-            let cleanedAmount = parseFloat(item.amount);
-            if (isNaN(cleanedAmount) || !Number.isFinite(cleanedAmount)) { cleanedAmount = 0.00; }
-
-            // 精准打标：必须字迹完全一致才识别为汇入款
-            const isIncome = item.category === "资金汇入";
-
-            return {
+            temporaryInvoiceArray.push({
                 ...item,
                 _year: cleanedYear,       
                 _displayDate: displayDate, 
                 amount: cleanedAmount,
-                _isIncome: isIncome,
                 _originalIndex: index 
-            };
-        }).filter(item => item !== null);
-
-        // 排序流稳定对齐：汇入记录永远置顶醒目展示
-        globalCleanedData.sort((a, b) => {
-            if (a._isIncome !== b._isIncome) return b._isIncome ? 1 : -1;
-            return b._displayDate.localeCompare(a._displayDate);
+            });
         });
+
+        // 📊 1. 首页明显处执行全局一次性计算并渲染，单独成行
+        let gBalanceTotal = Math.round((gIncomeTotal - gExpenseTotal) * 100) / 100;
+        document.getElementById('globalIncome').innerText = `¥${formatMoney(gIncomeTotal)}`;
+        document.getElementById('globalExpense').innerText = `¥${formatMoney(gExpenseTotal)}`;
+        document.getElementById('globalBalance').innerText = `¥${formatMoney(gBalanceTotal)}`;
+        document.getElementById('globalBalance').style.color = gBalanceTotal >= 0 ? "var(--success-color)" : "var(--accent-color)";
+
+        // 2. 将剥离干净后的发票赋值给全局展示变量
+        globalCleanedData = temporaryInvoiceArray;
+        globalCleanedData.sort((a, b) => b._displayDate.localeCompare(a._displayDate));
 
         availableYears = Array.from(yearsSet).sort((a, b) => Number(b) - Number(a));
         if (availableYears.length === 0) { availableYears = [new Date().getFullYear().toString()]; }
@@ -206,21 +240,22 @@
         renderYearlyReport(year);
     }
 
+    // 🚀【纯年度发票切片渲染引擎】
     function renderYearlyReport(year) {
-        let totalIncome = 0;   
-        let totalExpense = 0;  
         let invoiceCount = 0;  
         let categoryTotals = {};
         
         const tbody = document.getElementById('auditTableBody');
+        // 此处过滤出来的数据已经100%不含任何资金汇入记录
         const yearlyFilteredData = globalCleanedData.filter(item => item._year === year);
 
-        const cardsContainer = document.getElementById('summaryCards');
-        cardsContainer.innerHTML = `
-            <div class="card total-income"><h3>💰 ${year}年 累计汇入本金</h3><p id="totalIncome">¥0.00</p></div>
-            <div class="card total-expense"><h3>📈 ${year}年 累计报销支出</h3><p id="totalExpense">¥0.00</p></div>
-            <div class="card total-balance"><h3>⚖️ ${year}年 账户留存余额</h3><p id="totalBalance">¥0.00</p></div>
-            <div class="card"><h3>📑 ${year}年 报销发票张数</h3><p id="totalCount">0 张</p></div>
+        // 重置并动态构建当年细分看板
+        const insightsContainer = document.getElementById('yearlyInsightsContainer');
+        insightsContainer.innerHTML = `
+            <div class="card yearly-count">
+                <h3>📑 ${year}年 报销发票张数</h3>
+                <p id="yearlyCountText">0 张</p>
+            </div>
         `;
 
         if (yearlyFilteredData.length === 0) {
@@ -229,55 +264,35 @@
         }
 
         const tableRows = yearlyFilteredData.map(item => {
+            invoiceCount++;
             const categoryName = (item.category && item.category.trim()) ? item.category.trim() : "未分类";
             
-            if (item._isIncome) {
-                totalIncome = Math.round((totalIncome + item.amount) * 100) / 100;
-                return `
-                    <tr style="background-color: #f4fbf7;">
-                        <td><b style="color:var(--success-color); font-variant-numeric: tabular-nums;">${item._displayDate}</b></td>
-                        <td><span style="background:var(--success-color); color:white; padding:4px 10px; border-radius:12px; font-size:12px; font-weight:bold;">🟢 ${categoryName}</span></td>
-                        <td style="font-weight:700; color:var(--success-color); font-variant-numeric: tabular-nums;">+¥${formatMoney(item.amount)}</td>
-                        <td><span style="color:#666; font-size:12px; font-style:italic;">财务本金划转入账</span></td>
-                    </tr>
-                `;
-            } else {
-                totalExpense = Math.round((totalExpense + item.amount) * 100) / 100;
-                invoiceCount++;
-                
-                let catAmt = categoryTotals[categoryName] || 0;
-                categoryTotals[categoryName] = Math.round((catAmt + item.amount) * 100) / 100;
+            let catAmt = categoryTotals[categoryName] || 0;
+            categoryTotals[categoryName] = Math.round((catAmt + item.amount) * 100) / 100;
 
-                const receiptAction = (item.receipt && item.receipt.trim() !== "") 
-                    ? `<a href="javascript:void(0)" class="btn-view" onclick="zoomImage('${item.receipt}')">👁️ 查看合规发票</a>`
-                    : `<span style="color:#aaa; font-style:italic; font-size:12px;">无发票物理件</span>`;
+            const receiptAction = (item.receipt && item.receipt.trim() !== "") 
+                ? `<a href="javascript:void(0)" class="btn-view" onclick="zoomImage('${item.receipt}')">👁️ 查看合规发票</a>`
+                : `<span style="color:#aaa; font-style:italic; font-size:12px;">无发票物理件</span>`;
 
-                return `
-                    <tr>
-                        <td><b style="color:#1e3d59; font-variant-numeric: tabular-nums;">${item._displayDate}</b></td>
-                        <td><span style="background:#eef1f6; color:#2b2e4a; padding:4px 10px; border-radius:12px; font-size:12px; font-weight:bold;">${categoryName}</span></td>
-                        <td style="font-weight:700; color:var(--accent-color); font-variant-numeric: tabular-nums;">-¥${formatMoney(item.amount)}</td>
-                        <td>${receiptAction}</td>
-                    </tr>
-                `;
-            }
+            return `
+                <tr>
+                    <td><b style="color:#1e3d59; font-variant-numeric: tabular-nums;">${item._displayDate}</b></td>
+                    <td><span style="background:#eef1f6; color:#2b2e4a; padding:4px 10px; border-radius:12px; font-size:12px; font-weight:bold;">${categoryName}</span></td>
+                    <td style="font-weight:700; color:var(--accent-color); font-variant-numeric: tabular-nums;">¥${formatMoney(item.amount)}</td>
+                    <td>${receiptAction}</td>
+                </tr>
+            `;
         }).join('');
 
         tbody.innerHTML = tableRows;
+        document.getElementById('yearlyCountText').innerText = `${invoiceCount} 张`;
 
-        let totalBalance = Math.round((totalIncome - totalExpense) * 100) / 100;
-
-        document.getElementById('totalIncome').innerText = `¥${formatMoney(totalIncome)}`;
-        document.getElementById('totalExpense').innerText = `¥${formatMoney(totalExpense)}`;
-        document.getElementById('totalBalance').innerText = `¥${formatMoney(totalBalance)}`;
-        document.getElementById('totalBalance').style.color = totalBalance >= 0 ? "var(--success-color)" : "var(--accent-color)";
-        document.getElementById('totalCount').innerText = `${invoiceCount} 张`;
-
+        // 动态生成当年消费分类细分卡片
         Object.keys(categoryTotals).forEach(cat => {
             const card = document.createElement('div');
-            card.className = 'card';
-            card.innerHTML = `<h3>📁 ${cat} 消费累计</h3><p style="color: #444;">¥${formatMoney(categoryTotals[cat])}</p>`;
-            cardsContainer.appendChild(card);
+            card.className = 'card yearly-cat';
+            card.innerHTML = `<h3>📁 ${cat} 消费累计</h3><p style="color: #444; font-size: 20px;">¥${formatMoney(categoryTotals[cat])}</p>`;
+            insightsContainer.appendChild(card);
         });
     }
 
