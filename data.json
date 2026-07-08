@@ -1,5 +1,12 @@
 [
   {
+    "date": "20190412",
+    "type": "jpg",
+    "category": "煤气费",
+    "amount": 1242,
+    "receipt": "./receipts/20190412_煤气费.jpg"
+  },
+  {
     "date": "20220422",
     "type": "jpg",
     "category": "水费",
