@@ -1,5 +1,12 @@
 [
   {
+    "date": "20250508",
+    "category": "资金汇入",
+    "amount": 842000,
+    "type": "config",
+    "receipt": ""
+  },  
+  {
     "date": "20190412",
     "type": "jpg",
     "category": "煤气费",
