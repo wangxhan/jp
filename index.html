@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>📊 WXH发票对账自动化看板 v7.0 (全局清算版)</title>
+    <title>📊 新传达室吕大爷对账自动化 v7.6 (全局一览版)</title>
     <style>
         :root { --primary-color: #2b2e4a; --accent-color: #e84545; --bg-color: #f4f4f7; --success-color: #2e7d32; --text-main: #333333; --info-color: #0f4c75; }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background-color: var(--bg-color); color: var(--text-main); margin: 0; padding: 30px; line-height: 1.5; }
@@ -15,7 +15,7 @@
         .local-fallback-box button { background: #ff9800; color: white; border: none; padding: 10px 20px; border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 10px; font-size: 14px; transition: background 0.2s; }
         .local-fallback-box button:hover { background: #f57c00; }
 
-        /* 📊 全局总览看板：顶层常驻，独占一行 */
+        /* 📊 全局总览看板 */
         .global-summary { background: #eaecf1; padding: 20px; border-radius: 8px; margin-bottom: 25px; border: 1px solid #dcdfe6; }
         .global-title { margin: 0 0 15px 0; font-size: 16px; font-weight: bold; color: var(--primary-color); display: flex; align-items: center; gap: 6px; }
         .summary-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
@@ -33,7 +33,9 @@
         .year-tab:hover { background: #ccc; }
         .year-tab.active { background: var(--primary-color); color: white; box-shadow: 0 3px 8px rgba(0,0,0,0.15); }
 
-        .yearly-insights { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        /* 📅 年度洞察看板区域 */
+        .yearly-insights { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .card.yearly-sum { border-left-color: var(--accent-color); background: #fff; }
         .card.yearly-count { border-left-color: #795548; background: #fafafa; }
         .card.yearly-cat { border-left-color: #607d8b; background: #fff; }
         
@@ -55,8 +57,8 @@
 
 <div class="dashboard">
     <div class="header">
-        <h1 style="margin:0; font-size: 26px;">📊 WXH发票对账自动化看板</h1>
-        <p style="margin:8px 0 0 0; opacity: 0.85; font-size: 14px;">[架构升级] 资金汇入脱离年度切片，顶层常驻全账期总清算流，跨年度全自动轧账。</p>
+        <h1 style="margin:0; font-size: 26px;">📊 新传达室吕大爷对账自动化</h1>
+        <p style="margin:8px 0 0 0; opacity: 0.85; font-size: 14px;">[系统升级] 资金汇入脱离年度切片，顶层常驻全局一览流，跨年度全自动轧账。</p>
     </div>
 
     <div class="local-fallback-box" id="fallbackBox">
@@ -67,7 +69,7 @@
     </div>
 
     <div class="global-summary">
-        <div class="global-title">🗺️ 全账期财务稽核中心 (跨年度总清算)</div>
+        <div class="global-title">🗺️ 全局一览财务中心 (跨年度总清算)</div>
         <div class="summary-cards">
             <div class="card total-income">
                 <h3>💰 历史累计汇入总额 (本金)</h3>
@@ -87,6 +89,10 @@
     <div class="year-tabs" id="yearTabsContainer"></div>
 
     <div class="yearly-insights" id="yearlyInsightsContainer">
+        <div class="card yearly-sum">
+            <h3>📈 当年累计报销支出</h3>
+            <p id="yearlySumText">¥0.00</p>
+        </div>
         <div class="card yearly-count">
             <h3>📑 当年报销发票张数</h3>
             <p id="yearlyCountText">0 张</p>
@@ -116,11 +122,10 @@
 </div>
 
 <script>
-    let globalCleanedData = [];       // 过滤掉汇入本金后的纯发票报销数据
+    let globalCleanedData = [];       
     let availableYears = [];  
     let currentYear = "";     
     
-    // 全局汇总金额指标变量
     let gIncomeTotal = 0;
     let gExpenseTotal = 0;
 
@@ -159,14 +164,12 @@
         }
     }
 
-    // 🚀【全局轧账与年度剥离核心清洗算法】
     function processAndInitData(rawStream) {
         if (!Array.isArray(rawStream) || rawStream.length === 0) {
             document.getElementById('auditTableBody').innerHTML = `<tr><td colspan="4" style="text-align:center; color:#999; padding: 30px;">当前底稿仓库无任何账目数据。</td></tr>`;
             return;
         }
 
-        // 重置全局累加器
         gIncomeTotal = 0;
         gExpenseTotal = 0;
         
@@ -179,13 +182,11 @@
             let cleanedAmount = parseFloat(item.amount);
             if (isNaN(cleanedAmount) || !Number.isFinite(cleanedAmount)) { cleanedAmount = 0.00; }
 
-            // ⚡ 核心修改：判定是否为全局汇入资金
             if (item.category === "资金汇入") {
                 gIncomeTotal = Math.round((gIncomeTotal + cleanedAmount) * 100) / 100;
-                return; // 🛑 核心拦截：直接返回，不允许资金汇入流向年度发票池和年份提取集！
+                return; 
             }
 
-            // 累加历史所有年度总支出
             gExpenseTotal = Math.round((gExpenseTotal + cleanedAmount) * 100) / 100;
 
             let originalDateStr = item.date ? item.date.toString().trim() : "";
@@ -208,14 +209,12 @@
             });
         });
 
-        // 📊 1. 首页明显处执行全局一次性计算并渲染，单独成行
         let gBalanceTotal = Math.round((gIncomeTotal - gExpenseTotal) * 100) / 100;
         document.getElementById('globalIncome').innerText = `¥${formatMoney(gIncomeTotal)}`;
         document.getElementById('globalExpense').innerText = `¥${formatMoney(gExpenseTotal)}`;
         document.getElementById('globalBalance').innerText = `¥${formatMoney(gBalanceTotal)}`;
         document.getElementById('globalBalance').style.color = gBalanceTotal >= 0 ? "var(--success-color)" : "var(--accent-color)";
 
-        // 2. 将剥离干净后的发票赋值给全局展示变量
         globalCleanedData = temporaryInvoiceArray;
         globalCleanedData.sort((a, b) => b._displayDate.localeCompare(a._displayDate));
 
@@ -240,18 +239,20 @@
         renderYearlyReport(year);
     }
 
-    // 🚀【纯年度发票切片渲染引擎】
     function renderYearlyReport(year) {
         let invoiceCount = 0;  
+        let yearlyExpenseSum = 0; 
         let categoryTotals = {};
         
         const tbody = document.getElementById('auditTableBody');
-        // 此处过滤出来的数据已经100%不含任何资金汇入记录
         const yearlyFilteredData = globalCleanedData.filter(item => item._year === year);
 
-        // 重置并动态构建当年细分看板
         const insightsContainer = document.getElementById('yearlyInsightsContainer');
         insightsContainer.innerHTML = `
+            <div class="card yearly-sum">
+                <h3>📈 ${year}年 累计报销支出</h3>
+                <p id="yearlySumText">¥0.00</p>
+            </div>
             <div class="card yearly-count">
                 <h3>📑 ${year}年 报销发票张数</h3>
                 <p id="yearlyCountText">0 张</p>
@@ -265,8 +266,9 @@
 
         const tableRows = yearlyFilteredData.map(item => {
             invoiceCount++;
+            yearlyExpenseSum = Math.round((yearlyExpenseSum + item.amount) * 100) / 100;
+
             const categoryName = (item.category && item.category.trim()) ? item.category.trim() : "未分类";
-            
             let catAmt = categoryTotals[categoryName] || 0;
             categoryTotals[categoryName] = Math.round((catAmt + item.amount) * 100) / 100;
 
@@ -285,9 +287,10 @@
         }).join('');
 
         tbody.innerHTML = tableRows;
+        
+        document.getElementById('yearlySumText').innerText = `¥${formatMoney(yearlyExpenseSum)}`;
         document.getElementById('yearlyCountText').innerText = `${invoiceCount} 张`;
 
-        // 动态生成当年消费分类细分卡片
         Object.keys(categoryTotals).forEach(cat => {
             const card = document.createElement('div');
             card.className = 'card yearly-cat';
