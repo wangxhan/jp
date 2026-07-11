@@ -1,5 +1,12 @@
 [
   {
+    "date": "20260710",
+    "category": "资金汇入",
+    "amount": 146000,
+    "type": "config",
+    "receipt": ""
+  }, 
+  {
     "date": "20250508",
     "category": "资金汇入",
     "amount": 146000,
